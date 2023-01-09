@@ -1,2 +1,2 @@
 # Pixar
-Implementation of Subdivision Surfaces in Character Animation DeRose et. al.
+Implementation of Subdivision Surfaces in Character Animation to model semis-sharp creases for objects.
