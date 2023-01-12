@@ -1,31 +1,25 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include "initialization/meshinitializer.h"
 #include "initialization/objfile.h"
 #include "subdivision/catmullclarksubdivider.h"
 #include "subdivision/subdivider.h"
-#include "ui_mainwindow.h"
 
-/**
- * @brief MainWindow::MainWindow Creates a new Main Window UI.
- * @param parent Qt parent widget.
- */
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
-  ui->setupUi(this);
-  ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
-  ui->tessSettingsGroupBox->setEnabled(
-      ui->MainDisplay->settings.tesselationMode);
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
 }
 
-/**
- * @brief MainWindow::~MainWindow Deconstructs the main window.
- */
-MainWindow::~MainWindow() {
-  delete ui;
+MainWindow::~MainWindow()
+{
+    delete ui;
 
-  meshes.clear();
-  meshes.squeeze();
+    meshes.clear();
+    meshes.squeeze();
 }
 
 /**
@@ -52,8 +46,6 @@ void MainWindow::importOBJ(const QString& fileName) {
   ui->MainDisplay->update();
 }
 
-// Don't worry about adding documentation for the UI-related functions.
-
 void MainWindow::on_LoadOBJ_pressed() {
   QString filename = QFileDialog::getOpenFileName(
       this, "Import OBJ File", "../", tr("Obj Files (*.obj)"));
@@ -64,27 +56,25 @@ void MainWindow::on_MeshPresetComboBox_currentTextChanged(
     const QString& meshName) {
   importOBJ(":/models/" + meshName + ".obj");
 }
-
-void MainWindow::on_SubdivSteps_valueChanged(int value) {
-  Subdivider* subdivider = new CatmullClarkSubdivider();
-  for (int k = meshes.size() - 1; k < value; k++) {
-    meshes.append(subdivider->subdivide(meshes[k]));
-  }
-  ui->MainDisplay->updateBuffers(meshes[value]);
-  delete subdivider;
+void MainWindow::on_SubdivSteps_valueChanged(int value)
+{
+    Subdivider* subdivider = new CatmullClarkSubdivider();
+    for (int k = meshes.size() - 1; k < value; k++) {
+      meshes.append(subdivider->subdivide(meshes[k]));
+    }
+    ui->MainDisplay->updateBuffers(meshes[value]);
+    delete subdivider;
 }
 
-void MainWindow::on_TessellationCheckBox_toggled(bool checked) {
-  ui->MainDisplay->settings.tesselationMode = checked;
-  ui->tessSettingsGroupBox->setEnabled(checked);
-  ui->MainDisplay->settings.uniformUpdateRequired = true;
-  ui->MainDisplay->update();
+void MainWindow::on_HideMeshCheckBox_toggled(bool arg1)
+{
+
 }
 
-void MainWindow::on_HideMeshCheckBox_toggled(bool checked) {
-  // Useful for clearly seeing only the patches rendered by the Tessellation
-  // shaders.
-  ui->MainDisplay->settings.showCpuMesh = !checked;
-  ui->MainDisplay->settings.uniformUpdateRequired = true;
-  ui->MainDisplay->update();
+
+void MainWindow::on_TessellationCheckBox_toggled(bool arg1)
+{
+
 }
+
+
