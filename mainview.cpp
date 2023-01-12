@@ -56,7 +56,6 @@ void MainView::initializeGL() {
 
   // initialize renderers here with the current context
   meshRenderer.init(functions, &settings);
-  tessellationRenderer.init(functions, &settings);
 
   updateMatrices();
 }
@@ -101,7 +100,6 @@ void MainView::updateMatrices() {
 void MainView::updateBuffers(Mesh& mesh) {
   mesh.extractAttributes();
   meshRenderer.updateBuffers(mesh);
-  tessellationRenderer.updateBuffers(mesh);
   update();
 }
 
@@ -121,9 +119,6 @@ void MainView::paintGL() {
   if (settings.modelLoaded) {
     if (settings.showCpuMesh) {
       meshRenderer.draw();
-    }
-    if (settings.tesselationMode) {
-      tessellationRenderer.draw();
     }
 
     if (settings.uniformUpdateRequired) {

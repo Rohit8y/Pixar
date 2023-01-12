@@ -9,7 +9,6 @@
 
 #include "mesh/mesh.h"
 #include "renderers/meshrenderer.h"
-#include "renderers/tessrenderer.h"
 
 /**
  * @brief The MainView class represents the main view of the UI. It handles and
@@ -48,7 +47,6 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
   bool dragging;
 
   MeshRenderer meshRenderer;
-  TessellationRenderer tessellationRenderer;
 
   Settings settings;
 
