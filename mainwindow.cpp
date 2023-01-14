@@ -38,6 +38,7 @@ void MainWindow::importOBJ(const QString& fileName) {
     ui->MainDisplay->updateBuffers(meshes[0]);
     ui->MainDisplay->settings.modelLoaded = true;
   } else {
+    qDebug() << "Model not loaded ";
     ui->MainDisplay->settings.modelLoaded = false;
   }
 

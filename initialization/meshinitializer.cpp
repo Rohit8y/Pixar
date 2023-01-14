@@ -21,10 +21,15 @@ MeshInitializer::MeshInitializer() {}
 Mesh MeshInitializer::constructHalfEdgeMesh(const OBJFile& loadedOBJFile) {
   int numVertices = loadedOBJFile.vertexCoords.size();
   int numFaces = loadedOBJFile.faceValences.size();
+  qDebug() << numFaces;
+  qDebug() << numVertices;
   int numHalfEdges = 0;
   for (int f = 0; f < numFaces; f++) {
     numHalfEdges += loadedOBJFile.faceValences[f];
   }
+  qDebug() << "halfedge: " << numHalfEdges;
+//qDebug() << loadedOBJFile.faceValences[5];
+
 
   Mesh mesh;
   mesh.vertices.resize(numVertices);

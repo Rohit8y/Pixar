@@ -15,7 +15,7 @@ find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)
 find_package(Qt${QT_VERSION_MAJOR} OPTIONAL_COMPONENTS OpenGL OpenGLWidgets Widgets)
 
-qt_add_executable(CatMarkSubdiv WIN32 MACOSX_BUNDLE
+qt_add_executable(Pixar WIN32 MACOSX_BUNDLE
     initialization/meshinitializer.cpp initialization/meshinitializer.h
     initialization/objfile.cpp initialization/objfile.h
     main.cpp
@@ -26,7 +26,6 @@ qt_add_executable(CatMarkSubdiv WIN32 MACOSX_BUNDLE
     mesh/mesh.cpp mesh/mesh.h
     mesh/vertex.cpp mesh/vertex.h
     renderers/meshrenderer.cpp renderers/meshrenderer.h
-    renderers/tessrenderer.cpp renderers/tessrenderer.h
     renderers/renderer.cpp renderers/renderer.h
     settings.h
     shadertypes.h
@@ -36,20 +35,20 @@ qt_add_executable(CatMarkSubdiv WIN32 MACOSX_BUNDLE
     util/util.h util/util.cpp
     resources.qrc
 )
-target_link_libraries(CatMarkSubdiv PRIVATE
+target_link_libraries(Pixar PRIVATE
     Qt::Core
     Qt::Gui
 )
 
 if((QT_VERSION_MAJOR GREATER 5))
-    target_link_libraries(CatMarkSubdiv PRIVATE
+    target_link_libraries(Pixar PRIVATE
         Qt::OpenGL
         Qt::OpenGLWidgets
         Qt::Widgets
     )
 endif()
 
-install(TARGETS CatMarkSubdiv
+install(TARGETS Pixar
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
