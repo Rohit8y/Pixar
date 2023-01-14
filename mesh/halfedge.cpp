@@ -14,6 +14,7 @@ HalfEdge::HalfEdge() {
   twin = nullptr;
   face = nullptr;
   index = 0;
+  sharpness = 0;
 }
 
 /**
@@ -28,6 +29,7 @@ HalfEdge::HalfEdge(int index) {
   twin = nullptr;
   face = nullptr;
   this->index = index;
+  sharpness = 0;
 }
 
 /**

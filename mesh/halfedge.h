@@ -32,6 +32,7 @@ class HalfEdge {
   HalfEdge* twin;
   Face* face;
   int index;
+  int sharpness;
 
   int edgeIndex;
 };
