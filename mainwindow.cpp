@@ -45,6 +45,34 @@ void MainWindow::importOBJ(const QString& fileName) {
   ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
   ui->SubdivSteps->setValue(0);
   ui->MainDisplay->update();
+
+  Mesh newMesh = meshes[0];
+  const QVector<int> edgeSharpnessFour( {0, 1, 2, 3, 4} );
+  const QVector<int> edgeSharpnessTwo( { 5,6,7,8 } );
+
+  QVector<HalfEdge> halfEdges = newMesh.getHalfEdges();
+  for (int h = 0; h < newMesh.numHalfEdges(); ++h) {
+       HalfEdge* edge = &halfEdges[h];
+       // Assign sharpness 4
+       if (edgeSharpnessFour.contains(edge->index)){
+           edge->sharpness = 4;
+           qDebug() << "Sharpness 4 updated";
+           //qDebug() << edge->face->index;
+           qDebug() << edge->origin->coords;
+       }
+       // Assign sharpness 2
+       else if(edgeSharpnessTwo.contains(edge->index)){
+           edge->sharpness = 2;
+           qDebug() << "Sharpness 2 updated";
+           //qDebug() << edge->origin->index;
+           qDebug() << edge->origin->coords;
+       }
+       //Assign sharpness 0
+       else{
+           edge->sharpness = 0;
+       }
+  }
+
 }
 
 void MainWindow::on_LoadOBJ_pressed() {
