@@ -113,6 +113,13 @@ void MeshRenderer::draw() {
     gl->glDrawElements(GL_TRIANGLE_FAN, meshIBOSize, GL_UNSIGNED_INT, nullptr);
   }
 
+  // Highlight selected vertex point
+  if (settings->selectedVertex > -1) {
+      gl->glPointSize(30.0);
+      gl->glDrawArrays(GL_POINTS, settings->selectedVertex, 1);
+  }
+
+
   gl->glBindVertexArray(0);
 
   shaders[settings->currentShader]->release();

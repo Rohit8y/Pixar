@@ -197,10 +197,50 @@ void MainView::mouseMoveEvent(QMouseEvent* event) {
 
 /**
  * @brief MainView::mousePressEvent Handles presses by the mouse. Currently does
- * nothing except setting focus.
+ * raycasting.
  * @param event Mouse event.
  */
-void MainView::mousePressEvent(QMouseEvent* event) { setFocus(); }
+void MainView::mousePressEvent(QMouseEvent* event) {
+    setFocus();
+    // Only works when vertex selection is checked
+        if (event->buttons() == Qt::LeftButton) {
+
+
+            // Get screen space coordinates
+            int mouse_x = event->position().x();
+            int mouse_y = event->position().y();
+            GLfloat depth;
+            glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1,
+                                     GL_LEQUAL, GL_FLOAT, &depth);
+            qDebug()<<mouse_x<<mouse_y<<depth;
+            // Get NDC
+            QVector3D ray_nds = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
+            qDebug()<<ray_nds;
+
+            // Clipping
+            QVector4D ray_clip = QVector4D(ray_nds.x(),ray_nds.y(), -1.0 , 1.0);
+
+            // Eye
+            QVector4D ray_eye = settings.projectionMatrix.inverted() * ray_clip;
+          //  float w =   1;
+            QVector4D ray_eye_view = QVector4D(ray_eye.x(),ray_eye.y(),-1.0,0.0);
+
+            // World
+            QVector4D ray_eye_inverted = settings.modelViewMatrix.inverted() * ray_eye_view;
+            QVector3D ray_wor = QVector3D(ray_eye_inverted.x(),ray_eye_inverted.y(),ray_eye_inverted.z());
+            qDebug() << "old algo pos: " << ray_wor;
+            ray_wor = ray_wor.normalized();
+            qDebug() << "old algo pos normalised: " << ray_wor;
+            // Find closest point in the current mesh
+            int indexPos = findClosestPoint(ray_wor,0.4f);
+            // Update index of the point
+            settings.selectedVertex = indexPos;
+
+            updateMatrices();
+            update();
+
+     }
+}
 
 /**
  * @brief MainView::wheelEvent Handles zooming of the view.
@@ -239,4 +279,107 @@ void MainView::keyPressEvent(QKeyEvent* event) {
  */
 void MainView::onMessageLogged(QOpenGLDebugMessage Message) {
   qDebug() << " → Log:" << Message;
+}
+
+/**
+ * @brief MainView::toNormalizedDeviceCoordinates Transforms the screen corrdinates to
+ * 3D normalised device coordinates.
+ * @param mouse_x X coordinates of screen space.
+ * @param mouse_y Y coordinates of screen space.
+ */
+QVector3D MainView::toNormalizedDeviceCoordinates(int mouse_x, int mouse_y){
+    QVector3D ray_nds;
+
+    // Scale the range of x and y [-1:1] and reverse the direction of y.
+    float x = (2.0f * mouse_x) / width() - 1.0f;
+    float y = 1.0f - (2.0f * mouse_y) / height();
+    float z = 0.0f;
+    ray_nds = QVector3D(x, y, z);
+    return ray_nds;
+}
+
+
+QVector3D MainView::extractCameraPos()
+{
+  // Get the 3 basis vector planes at the camera origin and transform them into model space.
+  //
+  // NOTE: Planes have to be transformed by the inverse transpose of a matrix
+  //       Nice reference here: http://www.opengl.org/discussion_boards/showthread.php/159564-Clever-way-to-transform-plane-by-matrix
+  //
+  //       So for a transform to model space we need to do:
+  //            inverse(transpose(inverse(MV)))
+  //       This equals : transpose(MV) - see Lemma 5 in http://mathrefresher.blogspot.com.au/2007/06/transpose-of-matrix.html
+  //
+  // As each plane is simply (1,0,0,0), (0,1,0,0), (0,0,1,0) we can pull the data directly from the transpose matrix.
+  //
+  QMatrix4x4 modelViewT = settings.modelViewMatrix.transposed();
+
+  // Get plane normals
+  QVector3D n1(modelViewT.column(0));
+  QVector3D n2(modelViewT.column(1));
+  QVector3D n3(modelViewT.column(2));
+
+
+  // Get plane distances
+  float d1(modelViewT.column(0).w());
+  float d2(modelViewT.column(1).w());
+  float d3(modelViewT.column(2).w());
+
+  // Get the intersection of these 3 planes
+  // http://paulbourke.net/geometry/3planes/
+  QVector3D n2n3 = QVector3D::crossProduct(n2, n3);
+  QVector3D n3n1 = QVector3D::crossProduct(n3, n1);
+  QVector3D n1n2 = QVector3D::crossProduct(n1, n2);
+
+  QVector3D top = (n2n3 * d1) + (n3n1 * d2) + (n1n2 * d3);
+  float denom = QVector3D::dotProduct(n1, n2n3);
+
+  return top / -denom;
+}
+
+/**
+ * @brief MainView::findClosestPoint Finds the index of the closest vertex in
+ * themesh to the provided vertex.
+ * @param p The point to find the closest point to.
+ * @param maxDist The maximum distance a point and the provided point can have.
+ * Is a value between 0 and 1.
+ * @return The index of the closest point to the provided point. Returns -1 if
+ * no point was found within the maximum distance.
+ */
+int MainView::findClosestPoint(const QVector3D& p, const float maxDist) {
+  int ptIndex = -1;
+  float currentDist, minDist = 4;
+  Mesh currentMesh = settings.meshes[settings.subDivValue];
+  QVector<Vertex>& vertexList = currentMesh.getVertices();
+
+  QVector4D origin = {0, 0,6,1};
+  qDebug()<< settings.modelViewMatrix;
+  origin = settings.modelViewMatrix * origin;
+  qDebug() << "origin: "<<origin;
+  QVector3D orig = {origin.x(),origin.y(),origin.z()};
+  qDebug() << "origin: "<<orig;
+  orig = extractCameraPos();
+  qDebug()<< orig;
+  for (int k = 0; k < vertexList.size(); k++) {
+      QVector3D vertexCoord = vertexList[k].coords;
+    currentDist = vertexCoord.distanceToLine(orig,p);
+    qDebug()<<currentDist<<"  "<<vertexCoord;
+    if (currentDist < minDist) {
+      minDist = currentDist;
+      ptIndex = k;
+    }
+  }
+  if (minDist >= maxDist) {
+    return -1;
+  }
+  //HalfEdge* he =dd[ptIndex].out;
+  //Vertex* cand1 =he->prev->origin;
+  //Vertex* cand2 =he->next->origin;
+  //if(cand1->coords.distanceToLine(orig,p) > cand2->coords.distanceToLine(orig,p)){
+  //    qDebug()<< "second vertex: " << cand1->coords;
+ // }
+  //else{
+  //     qDebug()<< "second vertex: " << cand2->coords;
+ // }
+  return ptIndex;
 }

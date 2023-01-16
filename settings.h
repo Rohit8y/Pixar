@@ -17,6 +17,7 @@ typedef struct Settings {
   bool showCpuMesh = true;
 
   int subDivValue = 0;
+  int selectedVertex = 0;
 
   float FoV = 80;
   float dispRatio = 16.0f / 9.0f;
