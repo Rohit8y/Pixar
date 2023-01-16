@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
+    ui->sharpnessSettings->setEnabled(ui->MainDisplay->settings.modelLoaded);
+
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +45,9 @@ void MainWindow::importOBJ(const QString& fileName) {
   }
 
   ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
+  ui->sharpnessSettings->setEnabled(ui->MainDisplay->settings.modelLoaded);
+
+  ui->lcdNumber->display(0);
   ui->SubdivSteps->setValue(0);
   ui->MainDisplay->update();
 
@@ -96,15 +101,9 @@ void MainWindow::on_SubdivSteps_valueChanged(int value)
     delete subdivider;
 }
 
-void MainWindow::on_HideMeshCheckBox_toggled(bool arg1)
+void MainWindow::on_sharpnessSliderValue_valueChanged(int value)
 {
-
-}
-
-
-void MainWindow::on_TessellationCheckBox_toggled(bool arg1)
-{
-
+    ui->lcdNumber->display(value);
 }
 
 

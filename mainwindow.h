@@ -25,11 +25,9 @@ class MainWindow : public QMainWindow {
   void on_LoadOBJ_pressed();
   void on_MeshPresetComboBox_currentTextChanged(const QString &meshName);
   void on_SubdivSteps_valueChanged(int subdivLevel);
-  void on_TessellationCheckBox_toggled(bool checked);
+  void on_sharpnessSliderValue_valueChanged(int value);
 
-  void on_HideMeshCheckBox_toggled(bool checked);
-
- private:
+private:
   void importOBJ(const QString &fileName);
 
   Ui::MainWindow *ui;
