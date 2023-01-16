@@ -4,6 +4,7 @@
 #include <QMatrix4x4>
 
 #include "shadertypes.h"
+#include "mesh/mesh.h"
 
 /**
  * Struct that contains all the settings of the program. Initialised with a
@@ -15,6 +16,8 @@ typedef struct Settings {
   bool tesselationMode = false;
   bool showCpuMesh = true;
 
+  int subDivValue = 0;
+
   float FoV = 80;
   float dispRatio = 16.0f / 9.0f;
   float rotAngle = 0.0f;
@@ -25,6 +28,8 @@ typedef struct Settings {
 
   QMatrix4x4 modelViewMatrix, projectionMatrix;
   QMatrix3x3 normalMatrix;
+
+   QVector<Mesh> meshes;
 } Settings;
 
 #endif  // SETTINGS_H

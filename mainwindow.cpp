@@ -18,8 +18,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    meshes.clear();
-    meshes.squeeze();
+    ui->MainDisplay->settings.meshes.clear();
+    ui->MainDisplay->settings.meshes.squeeze();
 }
 
 /**
@@ -29,13 +29,13 @@ MainWindow::~MainWindow()
  */
 void MainWindow::importOBJ(const QString& fileName) {
   OBJFile newModel = OBJFile(fileName);
-  meshes.clear();
-  meshes.squeeze();
+  ui->MainDisplay->settings.meshes.clear();
+  ui->MainDisplay->settings.meshes.squeeze();
 
   if (newModel.loadedSuccessfully()) {
     MeshInitializer meshInitializer;
-    meshes.append(meshInitializer.constructHalfEdgeMesh(newModel));
-    ui->MainDisplay->updateBuffers(meshes[0]);
+    ui->MainDisplay->settings.meshes.append(meshInitializer.constructHalfEdgeMesh(newModel));
+    ui->MainDisplay->updateBuffers(ui->MainDisplay->settings.meshes[0]);
     ui->MainDisplay->settings.modelLoaded = true;
   } else {
     qDebug() << "Model not loaded ";
@@ -46,7 +46,7 @@ void MainWindow::importOBJ(const QString& fileName) {
   ui->SubdivSteps->setValue(0);
   ui->MainDisplay->update();
 
-  Mesh newMesh = meshes[0];
+  Mesh newMesh = ui->MainDisplay->settings.meshes[0];
   const QVector<int> edgeSharpnessFour( {0, 1, 2, 3, 4} );
   const QVector<int> edgeSharpnessTwo( { 5,6,7,8 } );
 
@@ -87,11 +87,12 @@ void MainWindow::on_MeshPresetComboBox_currentTextChanged(
 }
 void MainWindow::on_SubdivSteps_valueChanged(int value)
 {
+    ui->MainDisplay->settings.subDivValue = value;
     Subdivider* subdivider = new CatmullClarkSubdivider();
-    for (int k = meshes.size() - 1; k < value; k++) {
-      meshes.append(subdivider->subdivide(meshes[k]));
+    for (int k = ui->MainDisplay->settings.meshes.size() - 1; k < value; k++) {
+      ui->MainDisplay->settings.meshes.append(subdivider->subdivide(ui->MainDisplay->settings.meshes[k]));
     }
-    ui->MainDisplay->updateBuffers(meshes[value]);
+    ui->MainDisplay->updateBuffers(ui->MainDisplay->settings.meshes[value]);
     delete subdivider;
 }
 

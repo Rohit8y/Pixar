@@ -34,7 +34,6 @@ class MainWindow : public QMainWindow {
 
   Ui::MainWindow *ui;
   Subdivider *subdivider;
-  QVector<Mesh> meshes;
 };
 
 #endif  // MAINWINDOW_H
