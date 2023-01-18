@@ -28,6 +28,7 @@ class MeshRenderer : public Renderer {
   GLuint meshCoordsBO, meshNormalsBO, meshIndexBO;
   int meshIBOSize;
 
+
   // Uniforms
   GLint uniModelViewMatrix, uniProjectionMatrix, uniNormalMatrix;
 };
