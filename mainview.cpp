@@ -205,14 +205,13 @@ void MainView::mousePressEvent(QMouseEvent* event) {
     // Only works when vertex selection is checked
         if (event->buttons() == Qt::LeftButton) {
 
-
+            settings.isEdgeSelected=true;
             // Get screen space coordinates
             int mouse_x = event->position().x();
             int mouse_y = event->position().y();
             GLfloat depth;
             glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1,
                                      GL_LEQUAL, GL_FLOAT, &depth);
-            qDebug()<<mouse_x<<mouse_y<<depth;
             // Get NDC
             QVector3D ray_nds = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
             qDebug()<<ray_nds;
@@ -228,15 +227,13 @@ void MainView::mousePressEvent(QMouseEvent* event) {
             // World
             QVector4D ray_eye_inverted = settings.modelViewMatrix.inverted() * ray_eye_view;
             QVector3D ray_wor = QVector3D(ray_eye_inverted.x(),ray_eye_inverted.y(),ray_eye_inverted.z());
-            qDebug() << "old algo pos: " << ray_wor;
             ray_wor = ray_wor.normalized();
-            qDebug() << "old algo pos normalised: " << ray_wor;
+
             // Find closest point in the current mesh
-            int indexPos = findClosestPoint(ray_wor,0.4f);
-            // Update index of the point
-            settings.selectedVertex = indexPos;
+            findClosestHalfEdge(ray_wor,0.5f);
 
             updateMatrices();
+            updateBuffers(settings.meshes[settings.subDivValue]);
             update();
 
      }
@@ -336,50 +333,40 @@ QVector3D MainView::extractCameraPos()
 
   return top / -denom;
 }
+void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist){
 
-/**
- * @brief MainView::findClosestPoint Finds the index of the closest vertex in
- * themesh to the provided vertex.
- * @param p The point to find the closest point to.
- * @param maxDist The maximum distance a point and the provided point can have.
- * Is a value between 0 and 1.
- * @return The index of the closest point to the provided point. Returns -1 if
- * no point was found within the maximum distance.
- */
-int MainView::findClosestPoint(const QVector3D& p, const float maxDist) {
-  int ptIndex = -1;
-  float currentDist, minDist = 4;
-  Mesh currentMesh = settings.meshes[settings.subDivValue];
-  QVector<Vertex>& vertexList = currentMesh.getVertices();
+    int heIndex= -1;
+    float currentDist, minDist = 8;
+    float maxCP=100000;
+    float finalOriginDistance=10;
+    Mesh& currentMesh = settings.meshes[settings.subDivValue];
+    QVector<HalfEdge>& heList = currentMesh.getHalfEdges();
+    QVector3D cameraPos = extractCameraPos();
 
-  QVector4D origin = {0, 0,6,1};
-  qDebug()<< settings.modelViewMatrix;
-  origin = settings.modelViewMatrix * origin;
-  qDebug() << "origin: "<<origin;
-  QVector3D orig = {origin.x(),origin.y(),origin.z()};
-  qDebug() << "origin: "<<orig;
-  orig = extractCameraPos();
-  qDebug()<< orig;
-  for (int k = 0; k < vertexList.size(); k++) {
-      QVector3D vertexCoord = vertexList[k].coords;
-    currentDist = vertexCoord.distanceToLine(orig,p);
-    qDebug()<<currentDist<<"  "<<vertexCoord;
-    if (currentDist < minDist) {
-      minDist = currentDist;
-      ptIndex = k;
+    for(int i=0;i<heList.size();i++){
+        QVector3D v1 = heList[i].origin->coords;
+        QVector3D v2 = heList[i].next->origin->coords;
+
+        // Find distance from the ray
+        float dr1 = v1.distanceToLine(cameraPos,p);
+        float dr2 = v2.distanceToLine(cameraPos,p);
+
+        float sumdr = dr1 + dr2;
+
+        float sumcp = v1.distanceToPoint(cameraPos) + v2.distanceToPoint(cameraPos);
+
+        if (sumdr < minDist && sumcp <= maxCP){
+            minDist = sumdr;
+            maxCP = sumcp;
+            heIndex = i;
+        }
     }
-  }
-  if (minDist >= maxDist) {
-    return -1;
-  }
-  //HalfEdge* he =dd[ptIndex].out;
-  //Vertex* cand1 =he->prev->origin;
-  //Vertex* cand2 =he->next->origin;
-  //if(cand1->coords.distanceToLine(orig,p) > cand2->coords.distanceToLine(orig,p)){
-  //    qDebug()<< "second vertex: " << cand1->coords;
- // }
-  //else{
-  //     qDebug()<< "second vertex: " << cand2->coords;
- // }
-  return ptIndex;
+    qDebug() << "Closest HE points" << heList[heIndex].origin->coords << "and" << heList[heIndex].next->origin->coords;
+    QVector<unsigned int> vertexCoords ;
+    vertexCoords.append(heList[heIndex].origin->index);
+    vertexCoords.append(heList[heIndex].next->origin->index);
+    settings.edgeSlected = vertexCoords;
+    settings.selectedHE =  &heList[heIndex];
+    qDebug()<< heList[heIndex].sharpness;
 }
+

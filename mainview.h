@@ -7,6 +7,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
+#include "mainwindow.h"
 #include "mesh/mesh.h"
 #include "renderers/meshrenderer.h"
 
@@ -14,6 +15,7 @@
  * @brief The MainView class represents the main view of the UI. It handles and
  * orchestrates the different renderers.
  */
+
 class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
   Q_OBJECT
 
@@ -39,7 +41,8 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
   QVector2D toNormalizedScreenCoordinates(float x, float y);
   QVector3D toNormalizedDeviceCoordinates(int mouse_x, int mouse_y);
   QVector3D extractCameraPos();
-  int findClosestPoint(const QVector3D& p, const float maxDist);
+  void findClosestHalfEdge(const QVector3D& p, const float maxDist);
+
   QOpenGLDebugLogger debugLogger;
 
   // for mouse interactions:
@@ -49,13 +52,13 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
   bool dragging;
 
   MeshRenderer meshRenderer;
-
   Settings settings;
 
   // we make mainwindow a friend so it can access settings
-  friend class MainWindow;
- private slots:
+  friend class MainWindow ;
+  private slots:
   void onMessageLogged(QOpenGLDebugMessage Message);
+
 };
 
 #endif  // MAINVIEW_H

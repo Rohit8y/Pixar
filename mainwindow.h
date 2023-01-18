@@ -21,11 +21,15 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = nullptr);
   ~MainWindow() override;
 
- private slots:
+
+private slots:
   void on_LoadOBJ_pressed();
   void on_MeshPresetComboBox_currentTextChanged(const QString &meshName);
   void on_SubdivSteps_valueChanged(int subdivLevel);
   void on_sharpnessSliderValue_valueChanged(int value);
+
+  void timeout();
+
 
 private:
   void importOBJ(const QString &fileName);
