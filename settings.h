@@ -17,7 +17,7 @@ typedef struct Settings {
   bool showCpuMesh = true;
 
   int subDivValue = 0;
-  int selectedVertex = 0;
+  bool isEdgeSelected = false;
 
   float FoV = 80;
   float dispRatio = 16.0f / 9.0f;
@@ -30,7 +30,9 @@ typedef struct Settings {
   QMatrix4x4 modelViewMatrix, projectionMatrix;
   QMatrix3x3 normalMatrix;
 
-   QVector<Mesh> meshes;
+  QVector<Mesh> meshes;
+  QVector<unsigned int> edgeSlected;
+  HalfEdge* selectedHE;
 } Settings;
 
 #endif  // SETTINGS_H

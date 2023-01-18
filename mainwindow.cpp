@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QTimer>
 
 #include "initialization/meshinitializer.h"
 #include "initialization/objfile.h"
@@ -13,6 +14,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
     ui->sharpnessSettings->setEnabled(ui->MainDisplay->settings.modelLoaded);
+   // QTimer::singleShot(200, this, &Foo::on_pushButton_clicked);
+    //QTimer::singleShot(5, this, SLOT(timeout()));
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&MainWindow::timeout));
+    timer->start(1000);
+
+
 
 }
 
@@ -51,32 +59,32 @@ void MainWindow::importOBJ(const QString& fileName) {
   ui->SubdivSteps->setValue(0);
   ui->MainDisplay->update();
 
-  Mesh newMesh = ui->MainDisplay->settings.meshes[0];
-  const QVector<int> edgeSharpnessFour( {0, 1, 2, 3, 4} );
-  const QVector<int> edgeSharpnessTwo( { 5,6,7,8 } );
+  //Mesh newMesh = ui->MainDisplay->settings.meshes[0];
+  //const QVector<int> edgeSharpnessFour( {0, 1, 2, 3, 4} );
+  //const QVector<int> edgeSharpnessTwo( { 5,6,7,8 } );
 
-  QVector<HalfEdge> halfEdges = newMesh.getHalfEdges();
-  for (int h = 0; h < newMesh.numHalfEdges(); ++h) {
-       HalfEdge* edge = &halfEdges[h];
+  //QVector<HalfEdge> halfEdges = newMesh.getHalfEdges();
+  //for (int h = 0; h < newMesh.numHalfEdges(); ++h) {
+   //    HalfEdge* edge = &halfEdges[h];
        // Assign sharpness 4
-       if (edgeSharpnessFour.contains(edge->index)){
-           edge->sharpness = 4;
-           qDebug() << "Sharpness 4 updated";
+   //    if (edgeSharpnessFour.contains(edge->index)){
+   //        edge->sharpness = 4;
+   //        qDebug() << "Sharpness 4 updated";
            //qDebug() << edge->face->index;
-           qDebug() << edge->origin->coords;
-       }
+   //        qDebug() << edge->origin->coords;
+   //    }
        // Assign sharpness 2
-       else if(edgeSharpnessTwo.contains(edge->index)){
-           edge->sharpness = 2;
-           qDebug() << "Sharpness 2 updated";
+   //    else if(edgeSharpnessTwo.contains(edge->index)){
+   //        edge->sharpness = 2;
+   //        qDebug() << "Sharpness 2 updated";
            //qDebug() << edge->origin->index;
-           qDebug() << edge->origin->coords;
-       }
+   //        qDebug() << edge->origin->coords;
+    //   }
        //Assign sharpness 0
-       else{
-           edge->sharpness = 0;
-       }
-  }
+   //    else{
+   //        edge->sharpness = 0;
+   //    }
+  //}
 
 }
 
@@ -104,6 +112,16 @@ void MainWindow::on_SubdivSteps_valueChanged(int value)
 void MainWindow::on_sharpnessSliderValue_valueChanged(int value)
 {
     ui->lcdNumber->display(value);
+    ui->MainDisplay->settings.selectedHE->sharpness = value;
+    update();
 }
 
+// create as a slot in the MainWindow derived class
+void MainWindow::timeout()
+{
+    if(ui->MainDisplay->settings.isEdgeSelected){
+        ui->lcdNumber->display(ui->MainDisplay->settings.selectedHE->sharpness);
+        ui->sharpnessSliderValue->setValue(ui->MainDisplay->settings.selectedHE->sharpness);
+    }
 
+}
