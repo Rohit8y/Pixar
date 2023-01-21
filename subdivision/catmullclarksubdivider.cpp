@@ -341,34 +341,23 @@ QVector3D CatmullClarkSubdivider::facePoint(const Face &face) const {
  * @param Vertex The vertex to calculate the number of its adjacent sharp edges.
  * @return The number of adjacent sharp edges to the input vertex.
  */
-/*int CatmullClarkSubdivider::getAdjacentSharpEdgesValence(const Vertex &vertex) const {
-    int sharpCounter = 0;
-    HalfEdge *currentEdge = vertex.out;
-    for (int i = 0; i < vertex.valence; i++) {
-        if (currentEdge->sharpness > 0) {
-            sharpCounter++;
-        }
-        currentEdge = currentEdge->twin->next;
-    }
-    return sharpCounter;
-}*/
-
 int CatmullClarkSubdivider::getAdjacentSharpEdgesValence(const Vertex &vertex) const {
     int sharpCounter = 0;
     HalfEdge *currentEdge = vertex.out;
+
+    if (vertex.valence == 3 && !vertex.out->isBoundaryEdge()) {
+        currentEdge = currentEdge->twin->next;
+    }
+
     for (int i = 0; i < vertex.valence; i++) {
-        if (!currentEdge->isBoundaryEdge()){
-            currentEdge = currentEdge->twin;
-        }
         if (currentEdge->sharpness > 0) {
             sharpCounter++;
         }
         currentEdge = currentEdge->prev;
-        if (currentEdge->sharpness > 0) {
-            sharpCounter++;
+        if (! currentEdge->isBoundaryEdge()) {
+            currentEdge = currentEdge->twin;
         }
     }
-
     return sharpCounter;
 }
 
@@ -382,12 +371,20 @@ QVector<QVector3D> CatmullClarkSubdivider::getAdjacentSharpEdgesMidpoints(const 
     QVector<QVector3D> sharpEdges_midpoints;
     HalfEdge *currentEdge = vertex.out;
     QVector3D sharpEdge_midpoint;
+
+    if (vertex.valence == 3 && !vertex.out->isBoundaryEdge()) {
+        currentEdge = currentEdge->twin->next;
+    }
+
     for (int i = 0; i < vertex.valence; i++) {
         if (currentEdge->sharpness > 0) {
             sharpEdge_midpoint = (currentEdge->origin->coords + currentEdge->next->origin->coords) / 2.0;
             sharpEdges_midpoints.push_back(sharpEdge_midpoint);
         }
-        currentEdge = currentEdge->twin->next;
+        currentEdge = currentEdge->prev;
+        if (! currentEdge->isBoundaryEdge()) {
+            currentEdge = currentEdge->twin;
+        }
     }
     return sharpEdges_midpoints;
 }
@@ -401,13 +398,20 @@ QVector<QVector3D> CatmullClarkSubdivider::getAdjacentSharpEdgesMidpoints(const 
 float CatmullClarkSubdivider::getAvgSharpness(const Vertex &vertex) const {
     HalfEdge *currentEdge = vertex.out;
     float avg_sharpness = 0.0;
+
+    if (vertex.valence == 3 && !vertex.out->isBoundaryEdge()) {
+        currentEdge = currentEdge->twin->next;
+    }
+
     for (int i = 0; i < vertex.valence; i++) {
         if (currentEdge->sharpness > 0) {
             avg_sharpness += currentEdge->sharpness;
         }
-        currentEdge = currentEdge->twin->next;
+        currentEdge = currentEdge->prev;
+        if (! currentEdge->isBoundaryEdge()) {
+            currentEdge = currentEdge->twin;
+        }
     }
-
     return avg_sharpness /= 2.0;
 }
 
