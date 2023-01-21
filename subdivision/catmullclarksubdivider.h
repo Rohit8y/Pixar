@@ -21,10 +21,21 @@ class CatmullClarkSubdivider : public Subdivider {
   void setHalfEdgeData(Mesh& newMesh, int h, int edgeIdx, int vertIdx,
                        int twinIdx) const;
 
+  int getAdjacentSharpEdgesValence(const Vertex &vertex) const;
+  QVector<QVector3D> getAdjacentSharpEdgesMidpoints(const Vertex &vertex) const;
+  float getAvgSharpness(const Vertex &vertex) const;
+
   QVector3D facePoint(const Face& face) const;
+
   QVector3D edgePoint(const HalfEdge& edge) const;
+  QVector3D sharpEdgePoint(const HalfEdge &edge) const;
+  QVector3D edgeBlend(const HalfEdge &edge) const;
   QVector3D boundaryEdgePoint(const HalfEdge& edge) const;
+
   QVector3D vertexPoint(const Vertex& vertex) const;
+  QVector3D vertexCorner(const Vertex& vertex) const;
+  QVector3D vertexCrease(const Vertex &vertex, QVector<QVector3D> sharpEdges_midpoints) const;
+  QVector3D vertexBlend(const QVector3D &corner_vertex, const QVector3D &crease_vertex ) const;
   QVector3D boundaryVertexPoint(const Vertex& vertex) const;
 };
 
