@@ -19,7 +19,7 @@ class CatmullClarkSubdivider : public Subdivider {
   void topologyRefinement(Mesh& mesh, Mesh& newMesh) const;
 
   void setHalfEdgeData(Mesh& newMesh, int h, int edgeIdx, int vertIdx,
-                       int twinIdx) const;
+                       int twinIdx, int sharpness) const;
 
   int getAdjacentSharpEdgesValence(const Vertex &vertex) const;
   QVector<QVector3D> getAdjacentSharpEdgesMidpoints(const Vertex &vertex) const;
