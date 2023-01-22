@@ -37,6 +37,8 @@ class CatmullClarkSubdivider : public Subdivider {
   QVector3D vertexCrease(const Vertex &vertex, QVector<QVector3D> sharpEdges_midpoints) const;
   QVector3D vertexBlend(const QVector3D &corner_vertex, const QVector3D &crease_vertex ) const;
   QVector3D boundaryVertexPoint(const Vertex& vertex) const;
+  void updateSharpnessOfTwinEdges(Mesh &newMesh) const;
+
 };
 
 #endif  // CATMULL_CLARK_SUBDIVIDER_H

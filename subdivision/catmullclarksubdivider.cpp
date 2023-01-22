@@ -24,6 +24,7 @@ Mesh CatmullClarkSubdivider::subdivide(Mesh &mesh) const {
     reserveSizes(mesh, newMesh);
     geometryRefinement(mesh, newMesh);
     topologyRefinement(mesh, newMesh);
+    updateSharpnessOfTwinEdges(newMesh);
     return newMesh;
 }
 
@@ -456,10 +457,14 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
         int edgeIdx4 = 2 * edge->prev->edgeIndex +
                        (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
 
+        qDebug() << edge->index << edge->origin->index;
         int new_sharpness = 0;
         if (edge->sharpness > 0) {
+            qDebug() << "Creating new HE for: " << edge->index;
             new_sharpness = edge->sharpness - 1;
         }
+       // if (edge->index == 9)
+         //   new_sharpness = 9;
 
         setHalfEdgeData(newMesh, h1, edgeIdx1, vertIdx1, twinIdx1, new_sharpness);
         setHalfEdgeData(newMesh, h2, edgeIdx2, vertIdx2, twinIdx2, new_sharpness);
@@ -494,4 +499,21 @@ void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
     halfEdge->origin->out = halfEdge;
     halfEdge->origin->index = vertIdx;
     halfEdge->face->side = halfEdge;
+}
+
+void CatmullClarkSubdivider::updateSharpnessOfTwinEdges(Mesh &newMesh) const {
+    QVector<HalfEdge>& edgeList = newMesh.getHalfEdges();
+    for (int i=0;i<edgeList.size();i++){
+        HalfEdge he = edgeList[i];
+        if(he.sharpness>0 && !he.isBoundaryEdge()){
+            if(he.twin->sharpness > 0){
+                qDebug()<< "Twin already has sharpness";
+            }
+            else{
+                qDebug() << "Updating sharpness of twin";
+                he.twin->sharpness = he.sharpness;
+            }
+           }
+    }
+
 }
