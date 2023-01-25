@@ -56,6 +56,14 @@ QGroupBox::title {
         <height>0</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(205, 171, 143);
+font: 700 11pt &quot;Ubuntu Condensed&quot;;
+font: 500 11pt &quot;Ubuntu&quot;;
+font: 700 italic 11pt &quot;Ubuntu&quot;;
+color: rgb(105, 1, 1);
+background-color: rgb(200, 171, 135);</string>
+      </property>
       <property name="title">
        <string>Options</string>
       </property>
@@ -68,6 +76,10 @@ QGroupBox::title {
          <height>41</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(245, 194, 17);
+background-color: rgb(245, 216, 125);</string>
+       </property>
        <property name="text">
         <string>Load OBJ file</string>
        </property>
@@ -79,7 +91,7 @@ QGroupBox::title {
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>120</y>
+         <y>380</y>
          <width>201</width>
          <height>111</height>
         </rect>
@@ -99,6 +111,9 @@ QGroupBox::title {
          <layout class="QHBoxLayout" name="stepsLayout">
           <item>
            <widget class="QLabel" name="SubdivLabel">
+            <property name="styleSheet">
+             <string notr="true">font: 700 11pt &quot;Ubuntu&quot;;</string>
+            </property>
             <property name="text">
              <string>Steps:</string>
             </property>
@@ -126,6 +141,9 @@ QGroupBox::title {
          <width>181</width>
          <height>31</height>
         </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">selection-background-color: rgb(240, 216, 125);</string>
        </property>
        <item>
         <property name="text">
@@ -196,11 +214,14 @@ QGroupBox::title {
       <widget class="QGroupBox" name="sharpnessSettings">
        <property name="geometry">
         <rect>
-         <x>9</x>
-         <y>259</y>
+         <x>10</x>
+         <y>140</y>
          <width>201</width>
-         <height>131</height>
+         <height>231</height>
         </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(105, 1, 1);</string>
        </property>
        <property name="title">
         <string>Sharpness settings</string>
@@ -213,6 +234,10 @@ QGroupBox::title {
           <width>131</width>
           <height>42</height>
          </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(105, 1, 1);
+font: 700 11pt &quot;Ubuntu&quot;;</string>
         </property>
         <property name="text">
          <string>Sharpness value:</string>
@@ -227,6 +252,9 @@ QGroupBox::title {
           <height>25</height>
          </rect>
         </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="maximum">
          <number>50</number>
         </property>
@@ -237,7 +265,7 @@ QGroupBox::title {
        <widget class="QLCDNumber" name="lcdNumber">
         <property name="geometry">
          <rect>
-          <x>130</x>
+          <x>140</x>
           <y>40</y>
           <width>51</width>
           <height>40</height>
@@ -251,6 +279,23 @@ QGroupBox::title {
         </property>
         <property name="segmentStyle">
          <enum>QLCDNumber::Flat</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="sharpnessLabel_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>130</y>
+          <width>151</width>
+          <height>42</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(105, 1, 1);
+font: 700 11pt &quot;Ubuntu&quot;;</string>
+        </property>
+        <property name="text">
+         <string>Decimal sharpness:</string>
         </property>
        </widget>
       </widget>

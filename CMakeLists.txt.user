@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 8.0.2, 2023-01-25T02:59:40. -->
+<!-- Written by QtCreator 8.0.2, 2023-01-25T10:50:14. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -350,7 +350,6 @@
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/nab/Desktop/G15/RUG/Second_year/Block_1b/Computer_Graphics/Semester_project/src/build-Pixar-Desktop_Qt_6_4_1_GCC_64bit-Debug</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

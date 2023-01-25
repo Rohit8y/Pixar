@@ -81,7 +81,7 @@ void CatmullClarkSubdivider::geometryRefinement(Mesh &controlMesh,
     QVector<HalfEdge> &halfEdges = controlMesh.getHalfEdges();
     for (int h = 0; h < controlMesh.numHalfEdges(); h++) {
         HalfEdge currentEdge = halfEdges[h];
-        // Only create a new vertex per set of halfEdges (i.e,. once per undirected edge)
+        // Only create a new vertex per set of halfEdges (i.e., once per undirected edge)
         if (h > currentEdge.twinIdx()) {
             int v = controlMesh.numVerts() + controlMesh.numFaces() + currentEdge.edgeIdx();
             int valence;
@@ -485,7 +485,6 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
         int edgeIdx4 = 2 * edge->prev->edgeIndex +
                         (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
 
-        //qDebug() << edge->index << edge->origin->index;
         int new_sharpness = 0;
         if (edge->sharpness > 0) {
             //qDebug() << "Creating new HE for: " << edge->index;
@@ -529,11 +528,11 @@ void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
 
 void CatmullClarkSubdivider::updateSharpnessOfTwinEdges(Mesh &newMesh) const {
     QVector<HalfEdge>& edgeList = newMesh.getHalfEdges();
-    for (int i=0;i<edgeList.size();i++) {
+    for (int i = 0; i < edgeList.size(); i++) {
         HalfEdge he = edgeList[i];
-        if (he.sharpness>0 && !he.isBoundaryEdge()) {
+        if (he.sharpness > 0 && !he.isBoundaryEdge()) {
             if (he.twin->sharpness > 0) {
-                 qDebug()<< "Twin already has sharpness";
+                 qDebug()<< "Twin already has sharpness" << he.sharpness << he.twin->sharpness;
             } else {
                 qDebug() << "Updating sharpness of twin";
                 he.twin->sharpness = he.sharpness;
