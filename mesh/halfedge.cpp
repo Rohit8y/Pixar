@@ -8,13 +8,13 @@
  * @brief HalfEdge::HalfEdge Initializes an empty half-edge.
  */
 HalfEdge::HalfEdge() {
-  origin = nullptr;
-  next = nullptr;
-  prev = nullptr;
-  twin = nullptr;
-  face = nullptr;
-  index = 0;
-  sharpness = 0;
+    origin = nullptr;
+    next = nullptr;
+    prev = nullptr;
+    twin = nullptr;
+    face = nullptr;
+    index = 0;
+    sharpness = 0;
 }
 
 /**
@@ -23,13 +23,13 @@ HalfEdge::HalfEdge() {
  * the mesh.
  */
 HalfEdge::HalfEdge(int index) {
-  origin = nullptr;
-  next = nullptr;
-  prev = nullptr;
-  twin = nullptr;
-  face = nullptr;
-  this->index = index;
-  sharpness = 0;
+    origin = nullptr;
+    next = nullptr;
+    prev = nullptr;
+    twin = nullptr;
+    face = nullptr;
+    this->index = index;
+    sharpness = 0;
 }
 
 /**
@@ -44,20 +44,20 @@ HalfEdge::HalfEdge(int index) {
  * the mesh.
  */
 HalfEdge::HalfEdge(Vertex* origin, HalfEdge* next, HalfEdge* prev,
-                   HalfEdge* twin, Face* face, int index) {
-  this->origin = origin;
-  this->next = next;
-  this->prev = prev;
-  this->twin = twin;
-  this->face = face;
-  this->index = index;
+                    HalfEdge* twin, Face* face, int index) {
+    this->origin = origin;
+    this->next = next;
+    this->prev = prev;
+    this->twin = twin;
+    this->face = face;
+    this->index = index;
 }
 
 /**
  * @brief HalfEdge::debugInfo Prints some debug info of this half-edge.
  */
 void HalfEdge::debugInfo() const {
-  qDebug() << "HalfEdge at Index =" << index << "Target =" << origin
+    qDebug() << "HalfEdge at Index =" << index << "Target =" << origin
            << "Next =" << next << "Prev =" << prev << "Twin =" << twin
            << "Poly =" << face;
 }
@@ -69,11 +69,11 @@ void HalfEdge::debugInfo() const {
  * @return The index of the next half-edge.
  */
 int HalfEdge::nextIdx() const {
-  if (next != nullptr) {
-    return next->index;
-  }
-  if (index < 0) return -1;
-  return index % 4 == 3 ? index - 3 : index + 1;
+    if (next != nullptr) {
+        return next->index;
+    }
+    if (index < 0) return -1;
+    return index % 4 == 3 ? index - 3 : index + 1;
 }
 
 /**
@@ -83,11 +83,11 @@ int HalfEdge::nextIdx() const {
  * @return The index of the previous half-edge.
  */
 int HalfEdge::prevIdx() const {
-  if (prev != nullptr) {
-    return prev->index;
-  }
-  if (index < 0) return -1;
-  return index % 4 == 0 ? index + 3 : index - 1;
+    if (prev != nullptr) {
+        return prev->index;
+    }
+    if (index < 0) return -1;
+    return index % 4 == 0 ? index + 3 : index - 1;
 }
 
 /**
@@ -96,10 +96,10 @@ int HalfEdge::prevIdx() const {
  * @return The index of the twin half-edge. -1 if there is no twin.
  */
 int HalfEdge::twinIdx() const {
-  if (twin == nullptr) {
-    return -1;
-  }
-  return twin->index;
+    if (twin == nullptr) {
+        return -1;
+    }
+    return twin->index;
 }
 
 /**
@@ -110,11 +110,11 @@ int HalfEdge::twinIdx() const {
  * index is negative.
  */
 int HalfEdge::faceIdx() const {
-  if (face != nullptr) {
-    return face->index;
-  }
-  if (index < 0) return -1;
-  return index / 4;
+    if (face != nullptr) {
+        return face->index;
+    }
+    if (index < 0) return -1;
+    return index / 4;
 }
 
 /**

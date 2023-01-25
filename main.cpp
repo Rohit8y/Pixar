@@ -10,16 +10,16 @@
  * @return Exit code.
  */
 int main(int argc, char *argv[]) {
-  QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-  QSurfaceFormat glFormat;
-  glFormat.setProfile(QSurfaceFormat::CoreProfile);
-  glFormat.setVersion(4, 1);
-  glFormat.setOption(QSurfaceFormat::DebugContext);
-  QSurfaceFormat::setDefaultFormat(glFormat);
+    QSurfaceFormat glFormat;
+    glFormat.setProfile(QSurfaceFormat::CoreProfile);
+    glFormat.setVersion(4, 1);
+    glFormat.setOption(QSurfaceFormat::DebugContext);
+    QSurfaceFormat::setDefaultFormat(glFormat);
 
-  MainWindow w;
-  w.show();
+    MainWindow w;
+    w.show();
 
-  return a.exec();
+    return a.exec();
 }

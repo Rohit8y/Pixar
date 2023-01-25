@@ -19,22 +19,22 @@ MeshInitializer::MeshInitializer() {}
  * @return A half-edge representation of the provided mesh.
  */
 Mesh MeshInitializer::constructHalfEdgeMesh(const OBJFile& loadedOBJFile) {
-  int numVertices = loadedOBJFile.vertexCoords.size();
-  int numFaces = loadedOBJFile.faceValences.size();
-  int numHalfEdges = 0;
-  for (int f = 0; f < numFaces; f++) {
-    numHalfEdges += loadedOBJFile.faceValences[f];
-  }
+    int numVertices = loadedOBJFile.vertexCoords.size();
+    int numFaces = loadedOBJFile.faceValences.size();
+    int numHalfEdges = 0;
+    for (int f = 0; f < numFaces; f++) {
+        numHalfEdges += loadedOBJFile.faceValences[f];
+    }
 
-  Mesh mesh;
-  mesh.vertices.resize(numVertices);
-  mesh.faces.resize(numFaces);
-  mesh.halfEdges.resize(numHalfEdges);
-  mesh.halfEdges.reserve(2 * numHalfEdges);
+    Mesh mesh;
+    mesh.vertices.resize(numVertices);
+    mesh.faces.resize(numFaces);
+    mesh.halfEdges.resize(numHalfEdges);
+    mesh.halfEdges.reserve(2 * numHalfEdges);
 
-  initGeometry(mesh, numVertices, loadedOBJFile.vertexCoords);
-  initTopology(mesh, numFaces, loadedOBJFile.faceCoordInd);
-  return mesh;
+    initGeometry(mesh, numVertices, loadedOBJFile.vertexCoords);
+    initTopology(mesh, numFaces, loadedOBJFile.faceCoordInd);
+    return mesh;
 }
 
 /**
@@ -45,12 +45,12 @@ Mesh MeshInitializer::constructHalfEdgeMesh(const OBJFile& loadedOBJFile) {
  * @param vertexCoords The vertex coordinates.
  */
 void MeshInitializer::initGeometry(Mesh& mesh, int numVertices,
-                                   const QVector<QVector3D>& vertexCoords) {
-  for (int v = 0; v < numVertices; v++) {
-    Vertex* vertex = &mesh.vertices[v];
-    vertex->coords = vertexCoords[v];
-    vertex->index = v;
-  }
+                                    const QVector<QVector3D>& vertexCoords) {
+    for (int v = 0; v < numVertices; v++) {
+        Vertex* vertex = &mesh.vertices[v];
+        vertex->coords = vertexCoords[v];
+        vertex->index = v;
+    }
 }
 
 /**
@@ -62,25 +62,25 @@ void MeshInitializer::initGeometry(Mesh& mesh, int numVertices,
  * vertices.
  */
 void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
-                                   const QVector<QVector<int>>& faceCoordInd) {
-  int h = 0;
-  for (int f = 0; f < numFaces; ++f) {
-    QVector<int> faceIndices = faceCoordInd[f];
-    // Each face ends up with a number of half edges equal to its number of
-    // vertices.
-    Face* face = &mesh.faces[f];
-    face->index = f;
-    face->valence = faceIndices.size();
-    face->side = &mesh.halfEdges[h];
-    for (int i = 0; i < face->valence; ++i) {
-      addHalfEdge(mesh, h, face, faceIndices, i);
-      // The valence of a vertex is equal to the number of faces it belongs to,
-      // so for every face, increment the valence of all its vertices by 1.
-      mesh.vertices[faceIndices[i]].valence++;
-      h++;
+                                    const QVector<QVector<int>>& faceCoordInd) {
+    int h = 0;
+    for (int f = 0; f < numFaces; ++f) {
+        QVector<int> faceIndices = faceCoordInd[f];
+        // Each face ends up with a number of half edges equal to its number of
+        // vertices.
+        Face* face = &mesh.faces[f];
+        face->index = f;
+        face->valence = faceIndices.size();
+        face->side = &mesh.halfEdges[h];
+        for (int i = 0; i < face->valence; ++i) {
+            addHalfEdge(mesh, h, face, faceIndices, i);
+            // The valence of a vertex is equal to the number of faces it belongs to,
+            // so for every face, increment the valence of all its vertices by 1.
+            mesh.vertices[faceIndices[i]].valence++;
+            h++;
+        }
     }
-  }
-  mesh.edgeCount = edgeList.size();
+    mesh.edgeCount = edgeList.size();
 }
 
 /**
@@ -94,29 +94,29 @@ void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
  * @param i Index within vertIndices vector.
  */
 void MeshInitializer::addHalfEdge(Mesh& mesh, int h, Face* face,
-                                  const QVector<int>& vertIndices, int i) {
-  int faceValence = vertIndices.size();
-  int vertIdx = vertIndices[i];
-  int nextVertIdx = vertIndices[(i + 1) % faceValence];
-  // prev and next
-  int prev = h - 1;
-  int next = h + 1;
-  if (i == 0) {
-    // prev = h - 1 + faceValency
-    prev += faceValence;
-  } else if (i == faceValence - 1) {
-    // next = h + 1 - faceValency
-    next -= faceValence;
-  }
-  HalfEdge* halfEdge = &mesh.halfEdges[h];
-  halfEdge->index = h;
-  halfEdge->origin = &mesh.vertices[vertIdx];
-  halfEdge->prev = &mesh.halfEdges[prev];
-  halfEdge->next = &mesh.halfEdges[next];
-  halfEdge->face = face;
-  mesh.vertices[vertIdx].out = halfEdge;
+                                    const QVector<int>& vertIndices, int i) {
+    int faceValence = vertIndices.size();
+    int vertIdx = vertIndices[i];
+    int nextVertIdx = vertIndices[(i + 1) % faceValence];
+    // prev and next
+    int prev = h - 1;
+    int next = h + 1;
+    if (i == 0) {
+        // prev = h - 1 + faceValency
+        prev += faceValence;
+    } else if (i == faceValence - 1) {
+        // next = h + 1 - faceValency
+        next -= faceValence;
+    }
+    HalfEdge* halfEdge = &mesh.halfEdges[h];
+    halfEdge->index = h;
+    halfEdge->origin = &mesh.vertices[vertIdx];
+    halfEdge->prev = &mesh.halfEdges[prev];
+    halfEdge->next = &mesh.halfEdges[next];
+    halfEdge->face = face;
+    mesh.vertices[vertIdx].out = halfEdge;
 
-  setTwins(mesh, h, vertIdx, nextVertIdx);
+    setTwins(mesh, h, vertIdx, nextVertIdx);
 }
 
 /**
@@ -128,11 +128,11 @@ void MeshInitializer::addHalfEdge(Mesh& mesh, int h, Face* face,
  * of their ordering.
  */
 QPair<int, int> createUndirectedEdge(int v1, int v2) {
-  // to ensure that edges are consistent, always put the lower index first
-  if (v1 > v2) {
-    return QPair<int, int>(v2, v1);
-  }
-  return QPair<int, int>(v1, v2);
+    // to ensure that edges are consistent, always put the lower index first
+    if (v1 > v2) {
+        return QPair<int, int>(v2, v1);
+    }
+    return QPair<int, int>(v1, v2);
 }
 
 /**
@@ -147,22 +147,22 @@ QPair<int, int> createUndirectedEdge(int v1, int v2) {
  * to.
  */
 void MeshInitializer::setTwins(Mesh& mesh, int h, int vertIdx1, int vertIdx2) {
-  QPair<int, int> currentEdge = createUndirectedEdge(vertIdx1, vertIdx2);
+    QPair<int, int> currentEdge = createUndirectedEdge(vertIdx1, vertIdx2);
 
-  int edgeIdx = edgeList.indexOf(currentEdge);
-  // edge does not exist yet
-  if (edgeIdx == -1) {
-    // same as doing this after appending and adding -1
-    edgeIndices.append(edgeList.size());
-    mesh.halfEdges[h].edgeIndex = edgeList.size();
-    edgeList.append(currentEdge);
-  } else {
-    edgeIndices.append(edgeIdx);
-    mesh.halfEdges[h].edgeIndex = edgeIdx;
-    // edge already existed, meaning there is a twin somewhere earlier in the
-    // list of edges
-    HalfEdge* twinEdge = &mesh.halfEdges[edgeIndices.indexOf(edgeIdx)];
-    mesh.halfEdges[h].twin = twinEdge;
-    twinEdge->twin = &mesh.halfEdges[h];
-  }
+    int edgeIdx = edgeList.indexOf(currentEdge);
+    // edge does not exist yet
+    if (edgeIdx == -1) {
+        // same as doing this after appending and adding -1
+        edgeIndices.append(edgeList.size());
+        mesh.halfEdges[h].edgeIndex = edgeList.size();
+        edgeList.append(currentEdge);
+    } else {
+        edgeIndices.append(edgeIdx);
+        mesh.halfEdges[h].edgeIndex = edgeIdx;
+        // edge already existed, meaning there is a twin somewhere earlier in the
+        // list of edges
+        HalfEdge* twinEdge = &mesh.halfEdges[edgeIndices.indexOf(edgeIdx)];
+        mesh.halfEdges[h].twin = twinEdge;
+        twinEdge->twin = &mesh.halfEdges[h];
+    }
 }

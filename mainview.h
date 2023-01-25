@@ -17,47 +17,47 @@
  */
 
 class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
-  Q_OBJECT
+    Q_OBJECT
 
- public:
-  MainView(QWidget* Parent = nullptr);
-  ~MainView() override;
+    public:
+        MainView(QWidget* Parent = nullptr);
+        ~MainView() override;
 
-  void updateMatrices();
-  void updateUniforms();
-  void updateBuffers(Mesh& currentMesh);
+        void updateMatrices();
+        void updateUniforms();
+        void updateBuffers(Mesh& currentMesh);
 
- protected:
-  void initializeGL() override;
-  void resizeGL(int newWidth, int newHeight) override;
-  void paintGL() override;
+    protected:
+        void initializeGL() override;
+        void resizeGL(int newWidth, int newHeight) override;
+        void paintGL() override;
 
-  void mouseMoveEvent(QMouseEvent* event) override;
-  void mousePressEvent(QMouseEvent* event) override;
-  void wheelEvent(QWheelEvent* event) override;
-  void keyPressEvent(QKeyEvent* event) override;
+        void mouseMoveEvent(QMouseEvent* event) override;
+        void mousePressEvent(QMouseEvent* event) override;
+        void wheelEvent(QWheelEvent* event) override;
+        void keyPressEvent(QKeyEvent* event) override;
 
- private:
-  QVector2D toNormalizedScreenCoordinates(float x, float y);
-  QVector3D toNormalizedDeviceCoordinates(int mouse_x, int mouse_y);
-  QVector3D extractCameraPos();
-  void findClosestHalfEdge(const QVector3D& p, const float maxDist);
+    private:
+        QVector2D toNormalizedScreenCoordinates(float x, float y);
+        QVector3D toNormalizedDeviceCoordinates(int mouse_x, int mouse_y);
+        QVector3D extractCameraPos();
+        void findClosestHalfEdge(const QVector3D& p, const float maxDist);
 
-  QOpenGLDebugLogger debugLogger;
+        QOpenGLDebugLogger debugLogger;
 
-  // for mouse interactions:
-  float scale;
-  QVector3D oldVec;
-  QQuaternion rotationQuaternion;
-  bool dragging;
+        // for mouse interactions:
+        float scale;
+        QVector3D oldVec;
+        QQuaternion rotationQuaternion;
+        bool dragging;
 
-  MeshRenderer meshRenderer;
-  Settings settings;
+        MeshRenderer meshRenderer;
+        Settings settings;
 
-  // we make mainwindow a friend so it can access settings
-  friend class MainWindow ;
-  private slots:
-  void onMessageLogged(QOpenGLDebugMessage Message);
+        // we make mainwindow a friend so it can access settings
+        friend class MainWindow ;
+        private slots:
+        void onMessageLogged(QOpenGLDebugMessage Message);
 
 };
 

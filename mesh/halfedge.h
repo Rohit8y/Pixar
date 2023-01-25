@@ -11,30 +11,30 @@ class Face;
  * twin will be a nullpointer.
  */
 class HalfEdge {
- public:
-  HalfEdge();
-  HalfEdge(int index);
-  HalfEdge(Vertex* origin, HalfEdge* next, HalfEdge* prev, HalfEdge* twin,
-           Face* polygon, int index);
+    public:
+        HalfEdge();
+        HalfEdge(int index);
+        HalfEdge(Vertex* origin, HalfEdge* next, HalfEdge* prev, HalfEdge* twin,
+               Face* polygon, int index);
 
-  void debugInfo() const;
-  int nextIdx() const;
-  int prevIdx() const;
-  int twinIdx() const;
-  int faceIdx() const;
-  int edgeIdx() const;
+        void debugInfo() const;
+        int nextIdx() const;
+        int prevIdx() const;
+        int twinIdx() const;
+        int faceIdx() const;
+        int edgeIdx() const;
 
-  bool isBoundaryEdge() const;
+        bool isBoundaryEdge() const;
 
-  Vertex* origin;
-  HalfEdge* next;
-  HalfEdge* prev;
-  HalfEdge* twin;
-  Face* face;
-  int index;
-  int sharpness;
+        Vertex* origin;
+        HalfEdge* next;
+        HalfEdge* prev;
+        HalfEdge* twin;
+        Face* face;
+        int index;
+        int sharpness;
 
-  int edgeIndex;
+        int edgeIndex;
 };
 
 #endif  // HALFEDGE

@@ -101,13 +101,14 @@ void CatmullClarkSubdivider::geometryRefinement(Mesh &controlMesh,
                 coords = edgeBlend(currentEdge);
             }
             if (currentEdge.isBoundaryEdge()) {
-                valence = 3;
+                valence = 3;  // valence on boundary edges
             } else {
-                valence = 4;
+                valence = 4;  // valence on non-boundary edges
             }
             newVertices[v] = Vertex(coords, nullptr, valence, v);
         }
     }
+
     // Vertex Points
     for (int v = 0; v < controlMesh.numVerts(); v++) {
         QVector3D coords;
@@ -204,7 +205,7 @@ QVector3D CatmullClarkSubdivider::vertexCorner(const Vertex &vertex) const {
  *
  * e_1 = the midpoint of the first sharp edge adjacent to the provided vertex
  * e_2 = the midpoint of the second sharp edge adjacent to the provided vertex
- * S = old vertex point
+ * S = the old vertex point
  *
  * @param vertex The vertex to calculate the new position of. Note that this
  * vertex is the vertex from the control mesh.
@@ -287,10 +288,38 @@ QVector3D CatmullClarkSubdivider::edgePoint(const HalfEdge &edge) const {
     return edgePt /= 2.0;
 }
 
+/**
+ * @brief CatmullClarkSubdivider::sharpEdgePoint Calculates the position of the edge
+ * point according to the formula for sharp edge points:
+ *
+ * M: the midpoint of the edge
+ *
+ * @param edge One of the half-edges that lives on the edge to calculate
+ * the edge point. Note that this half-edge is the half-edge from the control
+ * mesh.
+ * @return The coordinates of the new sharp edge point.
+ */
 QVector3D CatmullClarkSubdivider::sharpEdgePoint(const HalfEdge &edge) const {
     return boundaryEdgePoint(edge);
 }
 
+/**
+ * @brief CatmullClarkSubdivider::edgeBlend Calculates the new position of an
+ * edge point if it is a blend edge. It does so according to the formula for blend edge
+ * points:
+ *
+ * (1 - sharpness) * Vsmooth + sharpness * Vsharp
+ *
+ * where
+ *
+ * Vsmooth = the coordinates of the edge midpoint after applying the smooth edge rule
+ * Vsharp = the coordinates of the edge midpoint after applying the sharp edge rule
+ *
+ * @param edge One of the half-edges that lives on the edge to calculate
+ * the edge point. Note that this half-edge is the half-edge from the control
+ * mesh.
+ * @return The coordinates of the new edge point.
+ */
 QVector3D CatmullClarkSubdivider::edgeBlend(const HalfEdge &edge) const {
     float sharpness = edge.sharpness;
     QVector3D smoothCoord;
@@ -315,7 +344,6 @@ QVector3D CatmullClarkSubdivider::edgeBlend(const HalfEdge &edge) const {
  * @return The coordinates of the new boundary edge point.
  */
 QVector3D CatmullClarkSubdivider::boundaryEdgePoint(const HalfEdge &edge) const {
-
     return (edge.origin->coords + edge.next->origin->coords) / 2.0f;
 }
 
@@ -455,16 +483,14 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
         int edgeIdx2 = 2 * controlMesh.numEdges() + h;
         int edgeIdx3 = 2 * controlMesh.numEdges() + edge->prev->index;
         int edgeIdx4 = 2 * edge->prev->edgeIndex +
-                       (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
+                        (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
 
-        qDebug() << edge->index << edge->origin->index;
+        //qDebug() << edge->index << edge->origin->index;
         int new_sharpness = 0;
         if (edge->sharpness > 0) {
-            qDebug() << "Creating new HE for: " << edge->index;
+            //qDebug() << "Creating new HE for: " << edge->index;
             new_sharpness = edge->sharpness - 1;
         }
-       // if (edge->index == 9)
-         //   new_sharpness = 9;
 
         setHalfEdgeData(newMesh, h1, edgeIdx1, vertIdx1, twinIdx1, new_sharpness);
         setHalfEdgeData(newMesh, h2, edgeIdx2, vertIdx2, twinIdx2, new_sharpness);
@@ -503,17 +529,15 @@ void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
 
 void CatmullClarkSubdivider::updateSharpnessOfTwinEdges(Mesh &newMesh) const {
     QVector<HalfEdge>& edgeList = newMesh.getHalfEdges();
-    for (int i=0;i<edgeList.size();i++){
+    for (int i=0;i<edgeList.size();i++) {
         HalfEdge he = edgeList[i];
-        if(he.sharpness>0 && !he.isBoundaryEdge()){
-            if(he.twin->sharpness > 0){
-                qDebug()<< "Twin already has sharpness";
-            }
-            else{
+        if (he.sharpness>0 && !he.isBoundaryEdge()) {
+            if (he.twin->sharpness > 0) {
+                 qDebug()<< "Twin already has sharpness";
+            } else {
                 qDebug() << "Updating sharpness of twin";
                 he.twin->sharpness = he.sharpness;
             }
-           }
+        }
     }
-
 }

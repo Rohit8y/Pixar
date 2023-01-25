@@ -4,17 +4,16 @@
 
 #include <QDebug>
 
-#include "face.h"
 #include "halfedge.h"
 
 /**
  * @brief Vertex::Vertex Initializes an empty vertex.
  */
 Vertex::Vertex() {
-  coords = QVector3D();
-  out = nullptr;
-  valence = 0;
-  index = 0;
+    coords = QVector3D();
+    out = nullptr;
+    valence = 0;
+    index = 0;
 }
 
 /**
@@ -26,10 +25,10 @@ Vertex::Vertex() {
  * the mesh.
  */
 Vertex::Vertex(QVector3D coords, HalfEdge* out, int valence, int index) {
-  this->coords = coords;
-  this->out = out;
-  this->valence = valence;
-  this->index = index;
+    this->coords = coords;
+    this->out = out;
+    this->valence = valence;
+    this->index = index;
 }
 
 /**
@@ -42,11 +41,11 @@ Vertex::Vertex(QVector3D coords, HalfEdge* out, int valence, int index) {
  * @return A boundary half-edge that originates from this vertex.
  */
 HalfEdge* Vertex::nextBoundaryHalfEdge() const {
-  HalfEdge* h = out;
-  while (!h->isBoundaryEdge()) {
-    h = h->twin->next;
-  }
-  return h;
+    HalfEdge* h = out;
+    while (!h->isBoundaryEdge()) {
+        h = h->twin->next;
+    }
+    return h;
 }
 
 /**
@@ -59,11 +58,11 @@ HalfEdge* Vertex::nextBoundaryHalfEdge() const {
  * @return A boundary half-edge that points to this vertex.
  */
 HalfEdge* Vertex::prevBoundaryHalfEdge() const {
-  HalfEdge* h = out->prev;
-  while (!h->isBoundaryEdge()) {
-    h = h->twin->prev;
-  }
-  return h;
+    HalfEdge* h = out->prev;
+    while (!h->isBoundaryEdge()) {
+        h = h->twin->prev;
+    }
+    return h;
 }
 
 /**
@@ -72,42 +71,42 @@ HalfEdge* Vertex::prevBoundaryHalfEdge() const {
  * @return True if the vertex lies on a boundary; false otherwise.
  */
 bool Vertex::isBoundaryVertex() const {
-  HalfEdge* h = out;
-  if (h->isBoundaryEdge()) {
-    return true;
-  }
-  HalfEdge* hNext = h->twin->next;
-  while (hNext != h) {
-    if (hNext->isBoundaryEdge()) {
-      return true;
+    HalfEdge* h = out;
+    if (h->isBoundaryEdge()) {
+        return true;
     }
-    hNext = hNext->twin->next;
-  }
-  return false;
+    HalfEdge* hNext = h->twin->next;
+    while (hNext != h) {
+        if (hNext->isBoundaryEdge()) {
+            return true;
+        }
+        hNext = hNext->twin->next;
+    }
+    return false;
 }
 
 /**
  * @brief Vertex::recalculateValence Recalculates the valence of this vertex.
  */
 void Vertex::recalculateValence() {
-  HalfEdge* currentEdge = out->prev->twin;
-  int n = 1;
-  while (currentEdge != nullptr && currentEdge != out) {
-    currentEdge = currentEdge->prev->twin;
-    n++;
-  }
-  currentEdge = out->twin;
-  while (currentEdge != nullptr && currentEdge->next != out) {
-    currentEdge = currentEdge->next->twin;
-    n++;
-  }
-  valence = n;
+    HalfEdge* currentEdge = out->prev->twin;
+    int n = 1;
+    while (currentEdge != nullptr && currentEdge != out) {
+        currentEdge = currentEdge->prev->twin;
+        n++;
+    }
+    currentEdge = out->twin;
+    while (currentEdge != nullptr && currentEdge->next != out) {
+        currentEdge = currentEdge->next->twin;
+        n++;
+    }
+    valence = n;
 }
 
 /**
  * @brief Vertex::debugInfo Prints some debug info of this vertex.
  */
 void Vertex::debugInfo() const {
-  qDebug() << "Vertex at Index =" << index << "Coords =" << coords
-           << "Out =" << out << "Valence =" << valence;
+    qDebug() << "Vertex at Index =" << index << "Coords =" << coords
+                << "Out =" << out << "Valence =" << valence;
 }

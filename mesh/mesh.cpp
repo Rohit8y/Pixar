@@ -14,46 +14,46 @@ Mesh::Mesh() {}
  * @brief Mesh::~Mesh Deconstructor. Clears all the data of the half-edge data.
  */
 Mesh::~Mesh() {
-  vertices.clear();
-  vertices.squeeze();
-  halfEdges.clear();
-  halfEdges.squeeze();
-  faces.clear();
-  faces.squeeze();
+    vertices.clear();
+    vertices.squeeze();
+    halfEdges.clear();
+    halfEdges.squeeze();
+    faces.clear();
+    faces.squeeze();
 }
 
 /**
  * @brief Mesh::recalculateNormals Recalculates the face and vertex normals.
  */
 void Mesh::recalculateNormals() {
-  for (int f = 0; f < numFaces(); f++) {
-    faces[f].recalculateNormal();
-  }
+    for (int f = 0; f < numFaces(); f++) {
+        faces[f].recalculateNormal();
+    }
 
-  vertexNormals.clear();
-  vertexNormals.fill({0, 0, 0}, numVerts());
+    vertexNormals.clear();
+    vertexNormals.fill({0, 0, 0}, numVerts());
 
-  // normal computation
-  for (int h = 0; h < numHalfEdges(); ++h) {
-    HalfEdge* edge = &halfEdges[h];
-    QVector3D pPrev = edge->prev->origin->coords;
-    QVector3D pCur = edge->origin->coords;
-    QVector3D pNext = edge->next->origin->coords;
+    // normal computation
+    for (int h = 0; h < numHalfEdges(); ++h) {
+        HalfEdge* edge = &halfEdges[h];
+        QVector3D pPrev = edge->prev->origin->coords;
+        QVector3D pCur = edge->origin->coords;
+        QVector3D pNext = edge->next->origin->coords;
 
-    QVector3D edgeA = (pPrev - pCur);
-    QVector3D edgeB = (pNext - pCur);
+        QVector3D edgeA = (pPrev - pCur);
+        QVector3D edgeB = (pNext - pCur);
 
-    float edgeLengths = edgeA.length() * edgeB.length();
-    float edgeDot = QVector3D::dotProduct(edgeA, edgeB) / edgeLengths;
-    float angle = sqrt(1 - edgeDot * edgeDot);
+        float edgeLengths = edgeA.length() * edgeB.length();
+        float edgeDot = QVector3D::dotProduct(edgeA, edgeB) / edgeLengths;
+        float angle = sqrt(1 - edgeDot * edgeDot);
 
-    vertexNormals[edge->origin->index] +=
-        (angle * edge->face->normal) / edgeLengths;
-  }
+        vertexNormals[edge->origin->index] +=
+            (angle * edge->face->normal) / edgeLengths;
+    }
 
-  for (int v = 0; v < numVerts(); ++v) {
-    vertexNormals[v] /= vertexNormals[v].length();
-  }
+    for (int v = 0; v < numVerts(); ++v) {
+        vertexNormals[v] /= vertexNormals[v].length();
+    }
 }
 
 /**
@@ -61,40 +61,40 @@ void Mesh::recalculateNormals() {
  * indices into easy-to-access buffers.
  */
 void Mesh::extractAttributes() {
-  recalculateNormals();
+    recalculateNormals();
 
-  vertexCoords.clear();
-  vertexCoords.reserve(vertices.size());
-  for (int v = 0; v < vertices.size(); v++) {
-    vertexCoords.append(vertices[v].coords);
-  }
-
-  polyIndices.clear();
-  polyIndices.reserve(halfEdges.size());
-  for (int f = 0; f < faces.size(); f++) {
-    HalfEdge* currentEdge = faces[f].side;
-    for (int m = 0; m < faces[f].valence; m++) {
-      polyIndices.append(currentEdge->origin->index);
-      currentEdge = currentEdge->next;
+    vertexCoords.clear();
+    vertexCoords.reserve(vertices.size());
+    for (int v = 0; v < vertices.size(); v++) {
+        vertexCoords.append(vertices[v].coords);
     }
-    // append MAX_INT to signify end of face
-    polyIndices.append(INT_MAX);
-  }
-  polyIndices.squeeze();
 
-  quadIndices.clear();
-  quadIndices.reserve(halfEdges.size() + faces.size());
-  for (int k = 0; k < faces.size(); k++) {
-    Face* face = &faces[k];
-    HalfEdge* currentEdge = face->side;
-    if (face->valence == 4) {
-      for (int m = 0; m < face->valence; m++) {
-        quadIndices.append(currentEdge->origin->index);
-        currentEdge = currentEdge->next;
-      }
+    polyIndices.clear();
+    polyIndices.reserve(halfEdges.size());
+    for (int f = 0; f < faces.size(); f++) {
+        HalfEdge* currentEdge = faces[f].side;
+        for (int m = 0; m < faces[f].valence; m++) {
+            polyIndices.append(currentEdge->origin->index);
+            currentEdge = currentEdge->next;
+        }
+        // append MAX_INT to signify end of face
+        polyIndices.append(INT_MAX);
     }
-  }
-  quadIndices.squeeze();
+    polyIndices.squeeze();
+
+    quadIndices.clear();
+    quadIndices.reserve(halfEdges.size() + faces.size());
+    for (int k = 0; k < faces.size(); k++) {
+        Face* face = &faces[k];
+        HalfEdge* currentEdge = face->side;
+        if (face->valence == 4) {
+            for (int m = 0; m < face->valence; m++) {
+                quadIndices.append(currentEdge->origin->index);
+                currentEdge = currentEdge->next;
+            }
+        }
+    }
+    quadIndices.squeeze();
 }
 
 /**

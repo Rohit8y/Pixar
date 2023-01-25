@@ -14,35 +14,35 @@
  * @param fileName The path of the .obj file
  */
 OBJFile::OBJFile(const QString& fileName) {
-  qDebug() << ":: Loading" << fileName;
-  QFile newModel(fileName);
+    qDebug() << ":: Loading" << fileName;
+    QFile newModel(fileName);
 
-  if (newModel.open(QIODevice::ReadOnly)) {
-    QTextStream fileContents(&newModel);
+    if (newModel.open(QIODevice::ReadOnly)) {
+        QTextStream fileContents(&newModel);
 
-    while (!fileContents.atEnd()) {
-      QString currentLine = fileContents.readLine();
-      QStringList values = currentLine.split(" ");
+        while (!fileContents.atEnd()) {
+            QString currentLine = fileContents.readLine();
+            QStringList values = currentLine.split(" ");
 
-      const QString descriptor = values[0];
-      if (descriptor == "v") {
-        handleVertex(values);
-      } else if (descriptor == "vt") {
-        handleVertexTexCoords(values);
-      } else if (descriptor == "vn") {
-        handleVertexNormal(values);
-      } else if (descriptor == "f") {
-        handleFace(values);
-      } else {
-        qDebug() << " * Line contents ignored," << currentLine;
-      }
+            const QString descriptor = values[0];
+            if (descriptor == "v") {
+                handleVertex(values);
+            } else if (descriptor == "vt") {
+                handleVertexTexCoords(values);
+            } else if (descriptor == "vn") {
+                handleVertexNormal(values);
+            } else if (descriptor == "f") {
+                handleFace(values);
+            } else {
+                qDebug() << " * Line contents ignored," << currentLine;
+            }
+        }
+        newModel.close();
+        normalizeMesh(DESIRED_SCALE);
+        loadSuccess = true;
+    } else {
+        loadSuccess = false;
     }
-    newModel.close();
-    normalizeMesh(DESIRED_SCALE);
-    loadSuccess = true;
-  } else {
-    loadSuccess = false;
-  }
 }
 
 /**
@@ -56,10 +56,10 @@ OBJFile::~OBJFile() {}
  * @param values Line contents split by whitespace.
  */
 void OBJFile::handleVertex(const QStringList& values) {
-  // Only x, y and z. If there's a w value (homogenous coordinates),
-  // ignore it.
-  vertexCoords.append(
-      QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
+    // Only x, y and z. If there's a w value (homogenous coordinates),
+    // ignore it.
+    vertexCoords.append(
+        QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
 }
 
 /**
@@ -68,9 +68,9 @@ void OBJFile::handleVertex(const QStringList& values) {
  * @param values Line contents split by whitespace.
  */
 void OBJFile::handleVertexTexCoords(const QStringList& values) {
-  // Only u and v. If there's a w value (barycentric coordinates), ignore
-  // it, it can be retrieved from 1-u-v.
-  textureCoords.append(QVector2D(values[1].toFloat(), values[2].toFloat()));
+    // Only u and v. If there's a w value (barycentric coordinates), ignore
+    // it, it can be retrieved from 1-u-v.
+    textureCoords.append(QVector2D(values[1].toFloat(), values[2].toFloat()));
 }
 
 /**
@@ -79,8 +79,8 @@ void OBJFile::handleVertexTexCoords(const QStringList& values) {
  * @param values Line contents split by whitespace.
  */
 void OBJFile::handleVertexNormal(const QStringList& values) {
-  vertexNormals.append(
-      QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
+    vertexNormals.append(
+        QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
 }
 
 /**
@@ -89,31 +89,31 @@ void OBJFile::handleVertexNormal(const QStringList& values) {
  * @param values Line contents split by whitespace.
  */
 void OBJFile::handleFace(const QStringList& values) {
-  QVector<int> faceCoordsIndices;
-  QVector<int> faceTexIndices;
-  QVector<int> faceNormalIndices;
-  for (int k = 1; k < values.size(); k++) {
-    QStringList indices = values[k].split("/");
+    QVector<int> faceCoordsIndices;
+    QVector<int> faceTexIndices;
+    QVector<int> faceNormalIndices;
+    for (int k = 1; k < values.size(); k++) {
+        QStringList indices = values[k].split("/");
 
-    // Note -1, OBJ starts indexing from 1.
-    faceCoordsIndices.append(indices[0].toInt() - 1);
+        // Note -1, OBJ starts indexing from 1.
+        faceCoordsIndices.append(indices[0].toInt() - 1);
 
-    if (indices.size() > 1) {
-      if (!indices[1].isEmpty()) {
-        faceTexIndices.append(indices[1].toInt() - 1);
-      }
+        if (indices.size() > 1) {
+            if (!indices[1].isEmpty()) {
+                faceTexIndices.append(indices[1].toInt() - 1);
+            }
 
-      if (indices.size() > 2) {
-        if (!indices[2].isEmpty()) {
-          faceNormalIndices.append(indices[2].toInt() - 1);
+            if (indices.size() > 2) {
+                if (!indices[2].isEmpty()) {
+                    faceNormalIndices.append(indices[2].toInt() - 1);
+                }
+            }
         }
-      }
     }
-  }
-  faceCoordInd.append(faceCoordsIndices);
-  faceTexIndices.append(faceTexIndices);
-  faceNormalIndices.append(faceNormalIndices);
-  faceValences.append(values.size() - 1);
+    faceCoordInd.append(faceCoordsIndices);
+    faceTexIndices.append(faceTexIndices);
+    faceNormalIndices.append(faceNormalIndices);
+    faceValences.append(values.size() - 1);
 }
 
 /**
@@ -129,13 +129,13 @@ bool OBJFile::loadedSuccessfully() const { return loadSuccess; }
  * @param desiredScale The desired scale.
  */
 void OBJFile::normalizeMesh(float desiredScale) {
-  float scale = calcBoundingBoxScale(vertexCoords, desiredScale);
-  QMatrix4x4 transformMatrix;
-  transformMatrix.setToIdentity();
-  transformMatrix.scale(scale);
-  for (int i = 0; i < vertexCoords.size(); ++i) {
-    QVector3D coord =
-        QVector3D(transformMatrix * QVector4D(vertexCoords[i], 1));
-    vertexCoords[i] = coord;
-  }
+    float scale = calcBoundingBoxScale(vertexCoords, desiredScale);
+    QMatrix4x4 transformMatrix;
+    transformMatrix.setToIdentity();
+    transformMatrix.scale(scale);
+    for (int i = 0; i < vertexCoords.size(); ++i) {
+        QVector3D coord =
+            QVector3D(transformMatrix * QVector4D(vertexCoords[i], 1));
+        vertexCoords[i] = coord;
+    }
 }

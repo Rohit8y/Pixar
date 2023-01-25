@@ -8,9 +8,9 @@
  * meshes.
  */
 class Subdivider {
- public:
-  virtual ~Subdivider();
-  virtual Mesh subdivide(Mesh& mesh) const = 0;
+    public:
+        virtual ~Subdivider();
+        virtual Mesh subdivide(Mesh& mesh) const = 0;
 };
 
 #endif  // SUBDIVIDER_H

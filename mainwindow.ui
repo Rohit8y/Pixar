@@ -79,9 +79,9 @@ QGroupBox::title {
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>110</y>
+         <y>120</y>
          <width>201</width>
-         <height>131</height>
+         <height>111</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -199,7 +199,7 @@ QGroupBox::title {
          <x>9</x>
          <y>259</y>
          <width>201</width>
-         <height>181</height>
+         <height>131</height>
         </rect>
        </property>
        <property name="title">

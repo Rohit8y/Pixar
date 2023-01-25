@@ -13,21 +13,21 @@
  * to every renderer.
  */
 class Renderer {
- public:
-  Renderer();
-  Renderer(QOpenGLFunctions_4_1_Core *functions, Settings *settings);
-  virtual ~Renderer();
+    public:
+        Renderer();
+        Renderer(QOpenGLFunctions_4_1_Core *functions, Settings *settings);
+        virtual ~Renderer();
 
-  virtual void initShaders() = 0;
-  virtual void initBuffers() = 0;
+        virtual void initShaders() = 0;
+        virtual void initBuffers() = 0;
 
-  QOpenGLShaderProgram *constructDefaultShader(const QString &name) const;
-  void init(QOpenGLFunctions_4_1_Core *f, Settings *s);
+        QOpenGLShaderProgram *constructDefaultShader(const QString &name) const;
+        void init(QOpenGLFunctions_4_1_Core *f, Settings *s);
 
- protected:
-  QMap<ShaderType, QOpenGLShaderProgram *> shaders;
-  QOpenGLFunctions_4_1_Core *gl;
-  Settings *settings;
+    protected:
+        QMap<ShaderType, QOpenGLShaderProgram *> shaders;
+        QOpenGLFunctions_4_1_Core *gl;
+        Settings *settings;
 };
 
 #endif  // RENDERER_H

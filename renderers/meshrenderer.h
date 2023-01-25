@@ -11,26 +11,26 @@
  * any arbitrary mesh.
  */
 class MeshRenderer : public Renderer {
- public:
-  MeshRenderer();
-  ~MeshRenderer() override;
+    public:
+        MeshRenderer();
+        ~MeshRenderer() override;
 
-  void updateUniforms();
-  void updateBuffers(Mesh& m);
-  void draw();
+        void updateUniforms();
+        void updateBuffers(Mesh& m);
+        void draw();
 
- protected:
-  void initShaders() override;
-  void initBuffers() override;
+    protected:
+        void initShaders() override;
+        void initBuffers() override;
 
- private:
-  GLuint vao;
-  GLuint meshCoordsBO, meshNormalsBO, meshIndexBO;
-  int meshIBOSize;
+    private:
+        GLuint vao;
+        GLuint meshCoordsBO, meshNormalsBO, meshIndexBO;
+        int meshIBOSize;
 
 
-  // Uniforms
-  GLint uniModelViewMatrix, uniProjectionMatrix, uniNormalMatrix;
+    // Uniforms
+    GLint uniModelViewMatrix, uniProjectionMatrix, uniNormalMatrix;
 };
 
 #endif  // MESHRENDERER_H
