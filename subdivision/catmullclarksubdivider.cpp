@@ -485,10 +485,9 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
         int edgeIdx4 = 2 * edge->prev->edgeIndex +
                         (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
 
-        int new_sharpness = 0;
-        if (edge->sharpness > 0) {
-            //qDebug() << "Creating new HE for: " << edge->index;
-            new_sharpness = edge->sharpness - 1;
+        double new_sharpness = 0.0;
+        if (edge->sharpness > 1.0) {
+            new_sharpness = edge->sharpness - 1.0;
         }
 
         setHalfEdgeData(newMesh, h1, edgeIdx1, vertIdx1, twinIdx1, new_sharpness);
@@ -509,7 +508,7 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
  * on a boundary.
  */
 void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
-                                                int vertIdx, int twinIdx, int sharpness) const {
+                                                int vertIdx, int twinIdx, double sharpness) const {
     HalfEdge *halfEdge = &newMesh.halfEdges[h];
 
     halfEdge->edgeIndex = edgeIdx;

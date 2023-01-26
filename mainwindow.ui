@@ -310,9 +310,9 @@ font: 700 11pt &quot;Ubuntu&quot;;</string>
        <widget class="QDoubleSpinBox" name="decimalShapnessSpinBox">
         <property name="geometry">
          <rect>
-          <x>130</x>
-          <y>140</y>
-          <width>62</width>
+          <x>10</x>
+          <y>180</y>
+          <width>181</width>
           <height>22</height>
          </rect>
         </property>

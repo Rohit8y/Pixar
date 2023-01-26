@@ -91,7 +91,6 @@ void MainWindow::on_sharpnessSliderValue_valueChanged(int intSharpness) {
 void MainWindow::timeout() {
     if(ui->MainDisplay->settings.isEdgeSelected) {
 
-
         double intSharpness = floor(ui->MainDisplay->settings.selectedHE->sharpness);
         double decSharpness = ui->MainDisplay->settings.selectedHE->sharpness - intSharpness;
 
@@ -101,12 +100,10 @@ void MainWindow::timeout() {
         ui->lcdNumber->display(ui->MainDisplay->settings.selectedHE->sharpness);
         ui->decimalShapnessSpinBox->setValue(decSharpness);
         ui->sharpnessSliderValue->setValue(ui->MainDisplay->settings.selectedHE->sharpness);
-
     }
 }
 
-void MainWindow::on_decimalShapnessSpinBox_valueChanged(double decSharpness)
-{
+void MainWindow::on_decimalShapnessSpinBox_valueChanged(double decSharpness) {
     double integerSharpness = ui->MainDisplay->settings.intSharpnessSelectedHE;
     double sharpness = integerSharpness + decSharpness;
     ui->lcdNumber->display(sharpness);

@@ -330,7 +330,7 @@ QVector3D MainView::extractCameraPos() {
     return top / -denom;
 }
 
-void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist){
+void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist) {
 
     int heIndex= -1;
     float currentDist, minDist = 8;
@@ -358,8 +358,6 @@ void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist){
             heIndex = i;
         }
     }
-    qDebug() << "Closest HE points" << heList[heIndex].origin->index << "and" << heList[heIndex].next->origin->index;
-    qDebug()<<"face id"<< heList[heIndex].face->index << heList[heIndex].next->face->index;
 
     QVector<unsigned int> vertexCoords ;
     vertexCoords.append(heList[heIndex].origin->index);
