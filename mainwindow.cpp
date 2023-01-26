@@ -81,7 +81,7 @@ void MainWindow::on_sharpnessSliderValue_valueChanged(int intSharpness) {
     // Sharpness for current half-edge
     ui->MainDisplay->settings.selectedHE->sharpness = sharpness;
     // Sharpness for twin half-edge
-    if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()){
+    if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()) {
         ui->MainDisplay->settings.selectedHE->twin->sharpness = sharpness;
     }
     update();
@@ -89,7 +89,7 @@ void MainWindow::on_sharpnessSliderValue_valueChanged(int intSharpness) {
 
 // create as a slot in the MainWindow derived class
 void MainWindow::timeout() {
-    if(ui->MainDisplay->settings.isEdgeSelected) {
+    if (ui->MainDisplay->settings.isEdgeSelected) {
 
         double intSharpness = floor(ui->MainDisplay->settings.selectedHE->sharpness);
         double decSharpness = ui->MainDisplay->settings.selectedHE->sharpness - intSharpness;
@@ -112,7 +112,7 @@ void MainWindow::on_decimalShapnessSpinBox_valueChanged(double decSharpness) {
     // Sharpness for current half-edge
     ui->MainDisplay->settings.selectedHE->sharpness = sharpness;
     // Sharpness for twin half-edge
-    if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()){
+    if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()) {
         ui->MainDisplay->settings.selectedHE->twin->sharpness = sharpness;
     }
     update();
