@@ -105,6 +105,16 @@ void MainWindow::timeout() {
         ui->sharpnessSliderValue->setEnabled(false);
         ui->decimalSharpnessSpinBox->setEnabled(false);
     }
+
+    if (ui->SubdivSteps->value() > 0 ) {
+        ui->sharpnessSliderValue->setEnabled(false);
+        ui->decimalSharpnessSpinBox->setEnabled(false);
+    }
+    else if (ui->SubdivSteps->value() == 0 && ui->MainDisplay->settings.edgeSlectionEnabled
+             && ui->MainDisplay->settings.isEdgeSelected) {
+        ui->sharpnessSliderValue->setEnabled(true);
+        ui->decimalSharpnessSpinBox->setEnabled(true);
+    }
 }
 
 void MainWindow::on_decimalSharpnessSpinBox_valueChanged(double decSharpness) {
