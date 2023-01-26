@@ -114,7 +114,7 @@ void MainWindow::on_decimalSharpnessSpinBox_valueChanged(double decSharpness) {
     double sharpness = integerSharpness + decSharpness;
     ui->lcdNumber->display(sharpness);
     ui->MainDisplay->settings.decSharpnessSelectedHE = decSharpness;
-    qDebug()<< "showing sharpness:"<<sharpness;
+
     // Sharpness for current half-edge
     ui->MainDisplay->settings.selectedHE->sharpness = sharpness;
     // Sharpness for twin half-edge
