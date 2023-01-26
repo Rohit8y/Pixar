@@ -18,7 +18,7 @@ typedef struct Settings {
 
     int subDivValue = 0;
     bool isEdgeSelected = false;
-
+    bool edgeSlectionEnabled = false;
     float FoV = 80;
     float dispRatio = 16.0f / 9.0f;
     float rotAngle = 0.0f;

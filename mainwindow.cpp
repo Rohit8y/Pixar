@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->sharpnessSettings->setEnabled(ui->MainDisplay->settings.modelLoaded);
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&MainWindow::timeout));
-    timer->start(1000);
+    timer->start(500);
 }
 
 MainWindow::~MainWindow() {
@@ -89,8 +89,10 @@ void MainWindow::on_sharpnessSliderValue_valueChanged(int intSharpness) {
 
 // create as a slot in the MainWindow derived class
 void MainWindow::timeout() {
-    if (ui->MainDisplay->settings.isEdgeSelected) {
+    if (ui->MainDisplay->settings.edgeSlectionEnabled && ui->MainDisplay->settings.isEdgeSelected) {
 
+        ui->sharpnessSliderValue->setEnabled(true);
+        ui->decimalSharpnessSpinBox->setEnabled(true);
         double intSharpness = floor(ui->MainDisplay->settings.selectedHE->sharpness);
         double decSharpness = ui->MainDisplay->settings.selectedHE->sharpness - intSharpness;
 
@@ -98,23 +100,33 @@ void MainWindow::timeout() {
         ui->MainDisplay->settings.decSharpnessSelectedHE = decSharpness;
 
         ui->lcdNumber->display(ui->MainDisplay->settings.selectedHE->sharpness);
-        ui->decimalShapnessSpinBox->setValue(decSharpness);
+        ui->decimalSharpnessSpinBox->setValue(decSharpness);
         ui->sharpnessSliderValue->setValue(ui->MainDisplay->settings.selectedHE->sharpness);
+    }
+    else{
+        ui->sharpnessSliderValue->setEnabled(false);
+        ui->decimalSharpnessSpinBox->setEnabled(false);
     }
 }
 
-void MainWindow::on_decimalShapnessSpinBox_valueChanged(double decSharpness) {
+void MainWindow::on_decimalSharpnessSpinBox_valueChanged(double decSharpness) {
     double integerSharpness = ui->MainDisplay->settings.intSharpnessSelectedHE;
     double sharpness = integerSharpness + decSharpness;
     ui->lcdNumber->display(sharpness);
     ui->MainDisplay->settings.decSharpnessSelectedHE = decSharpness;
-
+    qDebug()<< "showing sharpness:"<<sharpness;
     // Sharpness for current half-edge
     ui->MainDisplay->settings.selectedHE->sharpness = sharpness;
     // Sharpness for twin half-edge
     if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()) {
         ui->MainDisplay->settings.selectedHE->twin->sharpness = sharpness;
     }
+    update();
+}
+
+void MainWindow::on_edgeSelectionRadioButton_toggled(bool checked) {
+    ui->MainDisplay->settings.edgeSlectionEnabled = checked;
+    ui->MainDisplay->updateBuffers(ui->MainDisplay->settings.meshes[ui->SubdivSteps->value()]);
     update();
 }
 

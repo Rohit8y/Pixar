@@ -30,7 +30,9 @@ class MainWindow : public QMainWindow {
         void timeout();
 
 
-        void on_decimalShapnessSpinBox_valueChanged(double arg1);
+        void on_decimalSharpnessSpinBox_valueChanged(double arg1);
+
+        void on_edgeSelectionRadioButton_toggled(bool checked);
 
 private:
         void importOBJ(const QString &fileName);

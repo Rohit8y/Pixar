@@ -114,7 +114,7 @@ void MeshRenderer::draw() {
     }
 
     // Highlight selected vertex point
-    if (settings->isEdgeSelected) {
+    if (settings->edgeSlectionEnabled && settings->isEdgeSelected) {
         // gl->glDrawArrays(GL_POINTS, settings->selectedVertex, 1);
         //qDebug() << "drawing" << vboSize;
         //  gl->glDrawArrays(GL_LINE_STRIP, 0, vboSize);

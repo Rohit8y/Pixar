@@ -204,37 +204,37 @@ void MainView::mousePressEvent(QMouseEvent* event) {
     setFocus();
     // Only works when vertex selection is checked
     if (event->buttons() == Qt::LeftButton) {
+        if(settings.edgeSlectionEnabled){
+            settings.isEdgeSelected=true;
+            // Get screen space coordinates
+            int mouse_x = event->position().x();
+            int mouse_y = event->position().y();
+            GLfloat depth;
+            glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1,
+                                GL_LEQUAL, GL_FLOAT, &depth);
+            // Get NDC
+            QVector3D ray_nds = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
 
-        settings.isEdgeSelected=true;
-        // Get screen space coordinates
-        int mouse_x = event->position().x();
-        int mouse_y = event->position().y();
-        GLfloat depth;
-        glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1,
-                            GL_LEQUAL, GL_FLOAT, &depth);
-        // Get NDC
-        QVector3D ray_nds = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
-        qDebug()<<ray_nds;
+            // Clipping
+            QVector4D ray_clip = QVector4D(ray_nds.x(),ray_nds.y(), -1.0 , 1.0);
 
-        // Clipping
-        QVector4D ray_clip = QVector4D(ray_nds.x(),ray_nds.y(), -1.0 , 1.0);
+            // Eye
+            QVector4D ray_eye = settings.projectionMatrix.inverted() * ray_clip;
+            //  float w =   1;
+            QVector4D ray_eye_view = QVector4D(ray_eye.x(),ray_eye.y(),-1.0,0.0);
 
-        // Eye
-        QVector4D ray_eye = settings.projectionMatrix.inverted() * ray_clip;
-        //  float w =   1;
-        QVector4D ray_eye_view = QVector4D(ray_eye.x(),ray_eye.y(),-1.0,0.0);
+            // World
+            QVector4D ray_eye_inverted = settings.modelViewMatrix.inverted() * ray_eye_view;
+            QVector3D ray_wor = QVector3D(ray_eye_inverted.x(),ray_eye_inverted.y(),ray_eye_inverted.z());
+            ray_wor = ray_wor.normalized();
 
-        // World
-        QVector4D ray_eye_inverted = settings.modelViewMatrix.inverted() * ray_eye_view;
-        QVector3D ray_wor = QVector3D(ray_eye_inverted.x(),ray_eye_inverted.y(),ray_eye_inverted.z());
-        ray_wor = ray_wor.normalized();
+            // Find closest point in the current mesh
+            findClosestHalfEdge(ray_wor,0.5f);
 
-        // Find closest point in the current mesh
-        findClosestHalfEdge(ray_wor,0.5f);
-
-        updateMatrices();
-        updateBuffers(settings.meshes[settings.subDivValue]);
-        update();
+            updateMatrices();
+            updateBuffers(settings.meshes[settings.subDivValue]);
+            update();
+        }
     }
 }
 
