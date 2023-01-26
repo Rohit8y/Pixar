@@ -13,7 +13,7 @@
  * bounding box.
  */
 float calcBoundingBoxScale(const QVector<QVector3D> coords,
-                            const float desiredScale) {
+                           const float desiredScale) {
     QVector3D minCoord = coords[0];
     QVector3D maxCoord = coords[0];
     for (int i = 0; i < coords.size(); ++i) {

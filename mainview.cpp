@@ -51,8 +51,7 @@ void MainView::initializeGL() {
 
     // grab the opengl context
     QOpenGLFunctions_4_1_Core* functions =
-        QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(
-        this->context());
+            QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(this->context());
 
     // initialize renderers here with the current context
     meshRenderer.init(functions, &settings);
@@ -71,8 +70,7 @@ void MainView::resizeGL(int newWidth, int newHeight) {
     settings.dispRatio = float(newWidth) / float(newHeight);
 
     settings.projectionMatrix.setToIdentity();
-    settings.projectionMatrix.perspective(settings.FoV, settings.dispRatio, 0.1f,
-                                            40.0f);
+    settings.projectionMatrix.perspective(settings.FoV, settings.dispRatio, 0.1f, 40.0f);
     updateMatrices();
 }
 
@@ -120,7 +118,6 @@ void MainView::paintGL() {
         if (settings.showCpuMesh) {
             meshRenderer.draw();
         }
-
         if (settings.uniformUpdateRequired) {
             settings.uniformUpdateRequired = false;
         }
@@ -210,8 +207,7 @@ void MainView::mousePressEvent(QMouseEvent* event) {
             int mouse_x = event->position().x();
             int mouse_y = event->position().y();
             GLfloat depth;
-            glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1,
-                                GL_LEQUAL, GL_FLOAT, &depth);
+            glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1, GL_LEQUAL, GL_FLOAT, &depth);
             // Get NDC
             QVector3D ray_nds = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
 
@@ -352,13 +348,12 @@ void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist) {
 
         float sumcp = v1.distanceToPoint(cameraPos) + v2.distanceToPoint(cameraPos);
 
-        if (sumdr < minDist && sumcp <= maxCP){
+        if (sumdr < minDist && sumcp <= maxCP) {
             minDist = sumdr;
             maxCP = sumcp;
             heIndex = i;
         }
     }
-
     QVector<unsigned int> vertexCoords ;
     vertexCoords.append(heList[heIndex].origin->index);
     vertexCoords.append(heList[heIndex].next->origin->index);

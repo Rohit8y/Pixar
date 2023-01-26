@@ -35,6 +35,7 @@ qt_add_executable(Pixar WIN32 MACOSX_BUNDLE
     util/util.h util/util.cpp
     resources.qrc
 )
+
 target_link_libraries(Pixar PRIVATE
     Qt::Core
     Qt::Gui

@@ -44,7 +44,7 @@ HalfEdge::HalfEdge(int index) {
  * the mesh.
  */
 HalfEdge::HalfEdge(Vertex* origin, HalfEdge* next, HalfEdge* prev,
-                    HalfEdge* twin, Face* face, int index) {
+                   HalfEdge* twin, Face* face, int index) {
     this->origin = origin;
     this->next = next;
     this->prev = prev;
@@ -58,8 +58,8 @@ HalfEdge::HalfEdge(Vertex* origin, HalfEdge* next, HalfEdge* prev,
  */
 void HalfEdge::debugInfo() const {
     qDebug() << "HalfEdge at Index =" << index << "Target =" << origin
-           << "Next =" << next << "Prev =" << prev << "Twin =" << twin
-           << "Poly =" << face;
+             << "Next =" << next << "Prev =" << prev << "Twin =" << twin
+             << "Poly =" << face;
 }
 
 /**

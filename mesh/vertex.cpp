@@ -108,5 +108,5 @@ void Vertex::recalculateValence() {
  */
 void Vertex::debugInfo() const {
     qDebug() << "Vertex at Index =" << index << "Coords =" << coords
-                << "Out =" << out << "Valence =" << valence;
+             << "Out =" << out << "Valence =" << valence;
 }

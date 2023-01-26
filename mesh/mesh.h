@@ -43,7 +43,6 @@ class Mesh {
         QVector<Vertex> vertices;
         QVector<Face> faces;
         QVector<HalfEdge> halfEdges;
-
         int edgeCount;
 
         // These classes require access to the private fields to prevent a bunch of

@@ -8,8 +8,7 @@
 #include "subdivision/subdivider.h"
 
 
-MainWindow::MainWindow(QWidget *parent)
-            : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
     ui->sharpnessSettings->setEnabled(ui->MainDisplay->settings.modelLoaded);
@@ -43,7 +42,6 @@ void MainWindow::importOBJ(const QString& fileName) {
         qDebug() << "Model not loaded ";
         ui->MainDisplay->settings.modelLoaded = false;
     }
-
     ui->MeshGroupBox->setEnabled(ui->MainDisplay->settings.modelLoaded);
     ui->sharpnessSettings->setEnabled(ui->MainDisplay->settings.modelLoaded);
 
@@ -53,8 +51,7 @@ void MainWindow::importOBJ(const QString& fileName) {
 }
 
 void MainWindow::on_LoadOBJ_pressed() {
-    QString filename = QFileDialog::getOpenFileName(
-            this, "Import OBJ File", "../", tr("Obj Files (*.obj)"));
+    QString filename = QFileDialog::getOpenFileName(this, "Import OBJ File", "../", tr("Obj Files (*.obj)"));
     importOBJ(filename);
 }
 
@@ -109,9 +106,8 @@ void MainWindow::timeout() {
     if (ui->SubdivSteps->value() > 0 ) {
         ui->sharpnessSliderValue->setEnabled(false);
         ui->decimalSharpnessSpinBox->setEnabled(false);
-    }
-    else if (ui->SubdivSteps->value() == 0 && ui->MainDisplay->settings.edgeSlectionEnabled
-             && ui->MainDisplay->settings.isEdgeSelected) {
+    } else if (ui->SubdivSteps->value() == 0 && ui->MainDisplay->settings.edgeSlectionEnabled
+               && ui->MainDisplay->settings.isEdgeSelected) {
         ui->sharpnessSliderValue->setEnabled(true);
         ui->decimalSharpnessSpinBox->setEnabled(true);
     }

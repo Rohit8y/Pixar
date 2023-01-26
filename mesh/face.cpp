@@ -57,5 +57,5 @@ QVector3D Face::computeNormal() const {
  */
 void Face::debugInfo() const {
     qDebug() << "Face at Index =" << index << "Side =" << side
-                << "Val =" << valence;
+             << "Val =" << valence;
 }

@@ -15,7 +15,7 @@ class HalfEdge {
         HalfEdge();
         HalfEdge(int index);
         HalfEdge(Vertex* origin, HalfEdge* next, HalfEdge* prev, HalfEdge* twin,
-               Face* polygon, int index);
+                 Face* polygon, int index);
 
         void debugInfo() const;
         int nextIdx() const;
@@ -33,7 +33,6 @@ class HalfEdge {
         Face* face;
         int index;
         double sharpness;
-
         int edgeIndex;
 };
 

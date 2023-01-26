@@ -48,7 +48,7 @@ void Mesh::recalculateNormals() {
         float angle = sqrt(1 - edgeDot * edgeDot);
 
         vertexNormals[edge->origin->index] +=
-            (angle * edge->face->normal) / edgeLengths;
+                (angle * edge->face->normal) / edgeLengths;
     }
 
     for (int v = 0; v < numVerts(); ++v) {

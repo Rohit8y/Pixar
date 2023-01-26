@@ -58,7 +58,6 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
         friend class MainWindow ;
         private slots:
         void onMessageLogged(QOpenGLDebugMessage Message);
-
 };
 
 #endif  // MAINVIEW_H

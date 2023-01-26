@@ -59,7 +59,7 @@ void OBJFile::handleVertex(const QStringList& values) {
     // Only x, y and z. If there's a w value (homogenous coordinates),
     // ignore it.
     vertexCoords.append(
-        QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
+                QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
 }
 
 /**
@@ -80,7 +80,7 @@ void OBJFile::handleVertexTexCoords(const QStringList& values) {
  */
 void OBJFile::handleVertexNormal(const QStringList& values) {
     vertexNormals.append(
-        QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
+                QVector3D(values[1].toFloat(), values[2].toFloat(), values[3].toFloat()));
 }
 
 /**
@@ -135,7 +135,7 @@ void OBJFile::normalizeMesh(float desiredScale) {
     transformMatrix.scale(scale);
     for (int i = 0; i < vertexCoords.size(); ++i) {
         QVector3D coord =
-            QVector3D(transformMatrix * QVector4D(vertexCoords[i], 1));
+                QVector3D(transformMatrix * QVector4D(vertexCoords[i], 1));
         vertexCoords[i] = coord;
     }
 }

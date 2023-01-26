@@ -45,7 +45,7 @@ Mesh MeshInitializer::constructHalfEdgeMesh(const OBJFile& loadedOBJFile) {
  * @param vertexCoords The vertex coordinates.
  */
 void MeshInitializer::initGeometry(Mesh& mesh, int numVertices,
-                                    const QVector<QVector3D>& vertexCoords) {
+                                   const QVector<QVector3D>& vertexCoords) {
     for (int v = 0; v < numVertices; v++) {
         Vertex* vertex = &mesh.vertices[v];
         vertex->coords = vertexCoords[v];
@@ -62,7 +62,7 @@ void MeshInitializer::initGeometry(Mesh& mesh, int numVertices,
  * vertices.
  */
 void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
-                                    const QVector<QVector<int>>& faceCoordInd) {
+                                   const QVector<QVector<int>>& faceCoordInd) {
     int h = 0;
     for (int f = 0; f < numFaces; ++f) {
         QVector<int> faceIndices = faceCoordInd[f];
@@ -94,7 +94,7 @@ void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
  * @param i Index within vertIndices vector.
  */
 void MeshInitializer::addHalfEdge(Mesh& mesh, int h, Face* face,
-                                    const QVector<int>& vertIndices, int i) {
+                                  const QVector<int>& vertIndices, int i) {
     int faceValence = vertIndices.size();
     int vertIdx = vertIndices[i];
     int nextVertIdx = vertIndices[(i + 1) % faceValence];

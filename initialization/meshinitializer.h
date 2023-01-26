@@ -14,11 +14,11 @@ class MeshInitializer {
 
     private:
         void initGeometry(Mesh& mesh, int numVertices,
-                        const QVector<QVector3D>& vertexCoords);
+                          const QVector<QVector3D>& vertexCoords);
         void initTopology(Mesh& mesh, int numFaces,
-                         const QVector<QVector<int>>& faceCoordInd);
+                          const QVector<QVector<int>>& faceCoordInd);
         void addHalfEdge(Mesh& mesh, int h, Face* face,
-                       const QVector<int>& faceIndices, int i);
+                         const QVector<int>& faceIndices, int i);
         void setTwins(Mesh& mesh, int h, int vertIdx1, int vertIdx2);
 
         QList<QPair<int, int>> edgeList;

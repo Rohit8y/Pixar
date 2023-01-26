@@ -60,16 +60,16 @@ void MeshRenderer::updateBuffers(Mesh& mesh) {
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, meshCoordsBO);
     gl->glBufferData(GL_ARRAY_BUFFER, sizeof(QVector3D) * vertexCoords.size(),
-                    vertexCoords.data(), GL_STATIC_DRAW);
+                     vertexCoords.data(), GL_STATIC_DRAW);
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, meshNormalsBO);
     gl->glBufferData(GL_ARRAY_BUFFER, sizeof(QVector3D) * vertexNormals.size(),
-                    vertexNormals.data(), GL_STATIC_DRAW);
+                     vertexNormals.data(), GL_STATIC_DRAW);
 
     gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshIndexBO);
     gl->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    sizeof(unsigned int) * polyIndices.size(),
-                    polyIndices.data(), GL_STATIC_DRAW);
+                     sizeof(unsigned int) * polyIndices.size(),
+                     polyIndices.data(), GL_STATIC_DRAW);
 
     meshIBOSize = polyIndices.size();
 }
@@ -85,11 +85,11 @@ void MeshRenderer::updateUniforms() {
     uniNormalMatrix = shader->uniformLocation("normalmatrix");
 
     gl->glUniformMatrix4fv(uniModelViewMatrix, 1, false,
-                            settings->modelViewMatrix.data());
+                           settings->modelViewMatrix.data());
     gl->glUniformMatrix4fv(uniProjectionMatrix, 1, false,
-                            settings->projectionMatrix.data());
+                           settings->projectionMatrix.data());
     gl->glUniformMatrix3fv(uniNormalMatrix, 1, false,
-                            settings->normalMatrix.data());
+                           settings->normalMatrix.data());
 }
 
 /**
@@ -125,7 +125,6 @@ void MeshRenderer::draw() {
     }
 
     gl->glBindVertexArray(0);
-
     shaders[settings->currentShader]->release();
 
     // disable it again as you might want to draw something else at some point

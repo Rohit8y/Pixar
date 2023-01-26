@@ -35,12 +35,12 @@ Mesh CatmullClarkSubdivider::subdivide(Mesh &mesh) const {
  * @param newMesh The new mesh. At this point, the mesh is fully empty.
  */
 void CatmullClarkSubdivider::reserveSizes(Mesh &controlMesh,
-                                            Mesh &newMesh) const {
+                                          Mesh &newMesh) const {
     int newNumEdges = 2 * controlMesh.numEdges() + controlMesh.numHalfEdges();
     int newNumFaces = controlMesh.numHalfEdges();
     int newNumHalfEdges = controlMesh.numHalfEdges() * 4;
     int newNumVerts =
-        controlMesh.numVerts() + controlMesh.numFaces() + controlMesh.numEdges();
+            controlMesh.numVerts() + controlMesh.numFaces() + controlMesh.numEdges();
 
     newMesh.getVertices().resize(newNumVerts);
     newMesh.getHalfEdges().resize(newNumHalfEdges);
@@ -97,7 +97,7 @@ void CatmullClarkSubdivider::geometryRefinement(Mesh &controlMesh,
                 // Apply edge sharp rule
                 coords = sharpEdgePoint(currentEdge);
             } else if (currentEdge.sharpness < 1) {
-                // Apply blend edge sharp rule
+                // Apply blend edge rule
                 coords = edgeBlend(currentEdge);
             }
             if (currentEdge.isBoundaryEdge()) {
@@ -393,7 +393,7 @@ int CatmullClarkSubdivider::getAdjacentSharpEdgesValence(const Vertex &vertex) c
 /**
  * @brief CatmullClarkSubdivider::getAdjacentSharpEdgesMidpoints Extracts the midpoints of
  * all the adjacent sharp edges to the provided vertex.
- * @param Vertex The vertex to get its adjacent sharp edges.
+ * @param Vertex The vertex to get its adjacent sharp edges midpoints.
  * @return The midpoints of the sharp edges adjacent to the provided vertex.
  */
 QVector<QVector3D> CatmullClarkSubdivider::getAdjacentSharpEdgesMidpoints(const Vertex &vertex) const {
@@ -473,20 +473,18 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
         int twinIdx4 = 4 * edge->prev->twinIdx();
 
         int vertIdx1 = edge->origin->index;
-        int vertIdx2 =
-            controlMesh.numVerts() + controlMesh.numFaces() + edge->edgeIndex;
+        int vertIdx2 = controlMesh.numVerts() + controlMesh.numFaces() + edge->edgeIndex;
         int vertIdx3 = controlMesh.numVerts() + edge->faceIdx();
-        int vertIdx4 =
-            controlMesh.numVerts() + controlMesh.numFaces() + edge->prev->edgeIndex;
+        int vertIdx4 = controlMesh.numVerts() + controlMesh.numFaces() + edge->prev->edgeIndex;
 
         int edgeIdx1 = 2 * edge->edgeIndex + (h > edge->twinIdx() ? 0 : 1);
         int edgeIdx2 = 2 * controlMesh.numEdges() + h;
         int edgeIdx3 = 2 * controlMesh.numEdges() + edge->prev->index;
-        int edgeIdx4 = 2 * edge->prev->edgeIndex +
-                        (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
+        int edgeIdx4 = 2 * edge->prev->edgeIndex + (edge->prevIdx() > edge->prev->twinIdx() ? 1 : 0);
 
         double new_sharpness = 0.0;
         if (edge->sharpness > 1.0) {
+            // Define the new sharpness after a subdivision step
             new_sharpness = edge->sharpness - 1.0;
         }
 
@@ -508,7 +506,7 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
  * on a boundary.
  */
 void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
-                                                int vertIdx, int twinIdx, double sharpness) const {
+                                             int vertIdx, int twinIdx, double sharpness) const {
     HalfEdge *halfEdge = &newMesh.halfEdges[h];
 
     halfEdge->edgeIndex = edgeIdx;
@@ -525,15 +523,19 @@ void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
     halfEdge->face->side = halfEdge;
 }
 
+/**
+ * @brief LoopSubdivider::updateSharpnessOfTwinEdges Updates the sharpness value
+ * of the twin edges after a subdivision step.
+ * @param newMesh The new mesh.
+ */
 void CatmullClarkSubdivider::updateSharpnessOfTwinEdges(Mesh &newMesh) const {
     QVector<HalfEdge>& edgeList = newMesh.getHalfEdges();
     for (int i = 0; i < edgeList.size(); i++) {
         HalfEdge he = edgeList[i];
         if (he.sharpness > 0 && !he.isBoundaryEdge()) {
             if (he.twin->sharpness > 0) {
-               //  qDebug()<< "Twin already has sharpness" << he.sharpness << he.twin->sharpness;
+                //  qDebug()<< "Twin already has sharpness" << he.sharpness << he.twin->sharpness;
             } else {
-               // qDebug() << "Updating sharpness of twin";
                 he.twin->sharpness = he.sharpness;
             }
         }
