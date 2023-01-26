@@ -72,13 +72,17 @@ void MainWindow::on_SubdivSteps_valueChanged(int value) {
     delete subdivider;
 }
 
-void MainWindow::on_sharpnessSliderValue_valueChanged(int value) {
-    ui->lcdNumber->display(value);
+void MainWindow::on_sharpnessSliderValue_valueChanged(int intSharpness) {
+    double decSharpness = ui->MainDisplay->settings.decSharpnessSelectedHE;
+    double sharpness = intSharpness + decSharpness;
+
+    ui->lcdNumber->display(sharpness);
+    ui->MainDisplay->settings.intSharpnessSelectedHE = intSharpness;
     // Sharpness for current half-edge
-    ui->MainDisplay->settings.selectedHE->sharpness = value;
+    ui->MainDisplay->settings.selectedHE->sharpness = sharpness;
     // Sharpness for twin half-edge
     if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()){
-        ui->MainDisplay->settings.selectedHE->twin->sharpness = value;
+        ui->MainDisplay->settings.selectedHE->twin->sharpness = sharpness;
     }
     update();
 }
@@ -86,7 +90,34 @@ void MainWindow::on_sharpnessSliderValue_valueChanged(int value) {
 // create as a slot in the MainWindow derived class
 void MainWindow::timeout() {
     if(ui->MainDisplay->settings.isEdgeSelected) {
+
+
+        double intSharpness = floor(ui->MainDisplay->settings.selectedHE->sharpness);
+        double decSharpness = ui->MainDisplay->settings.selectedHE->sharpness - intSharpness;
+
+        ui->MainDisplay->settings.intSharpnessSelectedHE = intSharpness;
+        ui->MainDisplay->settings.decSharpnessSelectedHE = decSharpness;
+
         ui->lcdNumber->display(ui->MainDisplay->settings.selectedHE->sharpness);
+        ui->decimalShapnessSpinBox->setValue(decSharpness);
         ui->sharpnessSliderValue->setValue(ui->MainDisplay->settings.selectedHE->sharpness);
+
     }
 }
+
+void MainWindow::on_decimalShapnessSpinBox_valueChanged(double decSharpness)
+{
+    double integerSharpness = ui->MainDisplay->settings.intSharpnessSelectedHE;
+    double sharpness = integerSharpness + decSharpness;
+    ui->lcdNumber->display(sharpness);
+    ui->MainDisplay->settings.decSharpnessSelectedHE = decSharpness;
+
+    // Sharpness for current half-edge
+    ui->MainDisplay->settings.selectedHE->sharpness = sharpness;
+    // Sharpness for twin half-edge
+    if (!ui->MainDisplay->settings.selectedHE->isBoundaryEdge()){
+        ui->MainDisplay->settings.selectedHE->twin->sharpness = sharpness;
+    }
+    update();
+}
+

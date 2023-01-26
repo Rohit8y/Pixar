@@ -30,7 +30,9 @@ class MainWindow : public QMainWindow {
         void timeout();
 
 
-    private:
+        void on_decimalShapnessSpinBox_valueChanged(double arg1);
+
+private:
         void importOBJ(const QString &fileName);
 
         Ui::MainWindow *ui;

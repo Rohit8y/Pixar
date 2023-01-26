@@ -33,6 +33,9 @@ typedef struct Settings {
     QVector<Mesh> meshes;
     QVector<unsigned int> edgeSlected;
     HalfEdge* selectedHE;
+    double intSharpnessSelectedHE;
+    double decSharpnessSelectedHE;
+
 } Settings;
 
 #endif  // SETTINGS_H

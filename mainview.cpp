@@ -358,12 +358,13 @@ void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist){
             heIndex = i;
         }
     }
-    qDebug() << "Closest HE points" << heList[heIndex].origin->coords << "and" << heList[heIndex].next->origin->coords;
+    qDebug() << "Closest HE points" << heList[heIndex].origin->index << "and" << heList[heIndex].next->origin->index;
+    qDebug()<<"face id"<< heList[heIndex].face->index << heList[heIndex].next->face->index;
+
     QVector<unsigned int> vertexCoords ;
     vertexCoords.append(heList[heIndex].origin->index);
     vertexCoords.append(heList[heIndex].next->origin->index);
     settings.edgeSlected = vertexCoords;
     settings.selectedHE = &heList[heIndex];
-    qDebug()<< heList[heIndex].sharpness;
 }
 

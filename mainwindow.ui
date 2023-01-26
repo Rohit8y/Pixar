@@ -256,7 +256,7 @@ font: 700 11pt &quot;Ubuntu&quot;;</string>
          <string notr="true"/>
         </property>
         <property name="maximum">
-         <number>50</number>
+         <number>8</number>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -272,13 +272,22 @@ font: 700 11pt &quot;Ubuntu&quot;;</string>
          </rect>
         </property>
         <property name="smallDecimalPoint">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="digitCount">
-         <number>2</number>
+         <number>4</number>
+        </property>
+        <property name="mode">
+         <enum>QLCDNumber::Dec</enum>
         </property>
         <property name="segmentStyle">
          <enum>QLCDNumber::Flat</enum>
+        </property>
+        <property name="value" stdset="0">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>0</number>
         </property>
        </widget>
        <widget class="QLabel" name="sharpnessLabel_2">
@@ -296,6 +305,28 @@ font: 700 11pt &quot;Ubuntu&quot;;</string>
         </property>
         <property name="text">
          <string>Decimal sharpness:</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="decimalShapnessSpinBox">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>140</y>
+          <width>62</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="decimals">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <double>0.900000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
         </property>
        </widget>
       </widget>

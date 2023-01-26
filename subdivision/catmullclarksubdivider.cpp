@@ -532,9 +532,9 @@ void CatmullClarkSubdivider::updateSharpnessOfTwinEdges(Mesh &newMesh) const {
         HalfEdge he = edgeList[i];
         if (he.sharpness > 0 && !he.isBoundaryEdge()) {
             if (he.twin->sharpness > 0) {
-                 qDebug()<< "Twin already has sharpness" << he.sharpness << he.twin->sharpness;
+               //  qDebug()<< "Twin already has sharpness" << he.sharpness << he.twin->sharpness;
             } else {
-                qDebug() << "Updating sharpness of twin";
+               // qDebug() << "Updating sharpness of twin";
                 he.twin->sharpness = he.sharpness;
             }
         }
