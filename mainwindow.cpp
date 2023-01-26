@@ -87,7 +87,6 @@ void MainWindow::on_sharpnessSliderValue_valueChanged(int intSharpness) {
     update();
 }
 
-// create as a slot in the MainWindow derived class
 void MainWindow::timeout() {
     if (ui->MainDisplay->settings.edgeSlectionEnabled && ui->MainDisplay->settings.isEdgeSelected) {
 
@@ -102,8 +101,7 @@ void MainWindow::timeout() {
         ui->lcdNumber->display(ui->MainDisplay->settings.selectedHE->sharpness);
         ui->decimalSharpnessSpinBox->setValue(decSharpness);
         ui->sharpnessSliderValue->setValue(ui->MainDisplay->settings.selectedHE->sharpness);
-    }
-    else{
+    } else {
         ui->sharpnessSliderValue->setEnabled(false);
         ui->decimalSharpnessSpinBox->setEnabled(false);
     }
