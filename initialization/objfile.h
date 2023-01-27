@@ -22,6 +22,8 @@ class OBJFile {
         void handleVertexTexCoords(const QStringList& values);
         void handleVertexNormal(const QStringList& values);
         void handleFace(const QStringList& values);
+        void handleSharpness(const QStringList& values);
+
 
         QVector<QVector3D> vertexCoords;
         QVector<QVector2D> textureCoords;
@@ -30,6 +32,9 @@ class OBJFile {
         QVector<QVector<int>> faceCoordInd;
         QVector<QVector<int>> faceTexInd;
         QVector<QVector<int>> faceNormalInd;
+        QVector<int> heSharpInd;
+        QVector<double> sharpnessValue;
+
 
         bool loadSuccess;
 

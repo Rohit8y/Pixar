@@ -33,7 +33,8 @@ Mesh MeshInitializer::constructHalfEdgeMesh(const OBJFile& loadedOBJFile) {
     mesh.halfEdges.reserve(2 * numHalfEdges);
 
     initGeometry(mesh, numVertices, loadedOBJFile.vertexCoords);
-    initTopology(mesh, numFaces, loadedOBJFile.faceCoordInd);
+    initTopology(mesh, numFaces, loadedOBJFile.faceCoordInd,loadedOBJFile.heSharpInd,loadedOBJFile.sharpnessValue);
+    updateSharpnessOfTwinEdges(mesh);
     return mesh;
 }
 
@@ -62,7 +63,9 @@ void MeshInitializer::initGeometry(Mesh& mesh, int numVertices,
  * vertices.
  */
 void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
-                                   const QVector<QVector<int>>& faceCoordInd) {
+                                   const QVector<QVector<int>>& faceCoordInd,
+                                   const QVector<int>& sharpnessHeInd,
+                                   const QVector<double>& sharpnessValue) {
     int h = 0;
     for (int f = 0; f < numFaces; ++f) {
         QVector<int> faceIndices = faceCoordInd[f];
@@ -73,7 +76,13 @@ void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
         face->valence = faceIndices.size();
         face->side = &mesh.halfEdges[h];
         for (int i = 0; i < face->valence; ++i) {
-            addHalfEdge(mesh, h, face, faceIndices, i);
+            double sharpnessHE = 0;
+            for (int z = 0; z<sharpnessHeInd.size(); z++){
+                if(sharpnessHeInd[z] == h){
+                    sharpnessHE = sharpnessValue[z];
+                }
+            }
+            addHalfEdge(mesh, h, face, faceIndices, i,sharpnessHE);
             // The valence of a vertex is equal to the number of faces it belongs to,
             // so for every face, increment the valence of all its vertices by 1.
             mesh.vertices[faceIndices[i]].valence++;
@@ -94,7 +103,7 @@ void MeshInitializer::initTopology(Mesh& mesh, int numFaces,
  * @param i Index within vertIndices vector.
  */
 void MeshInitializer::addHalfEdge(Mesh& mesh, int h, Face* face,
-                                  const QVector<int>& vertIndices, int i) {
+                                  const QVector<int>& vertIndices, int i, double sharpness) {
     int faceValence = vertIndices.size();
     int vertIdx = vertIndices[i];
     int nextVertIdx = vertIndices[(i + 1) % faceValence];
@@ -114,6 +123,7 @@ void MeshInitializer::addHalfEdge(Mesh& mesh, int h, Face* face,
     halfEdge->prev = &mesh.halfEdges[prev];
     halfEdge->next = &mesh.halfEdges[next];
     halfEdge->face = face;
+    halfEdge->sharpness = sharpness;
     mesh.vertices[vertIdx].out = halfEdge;
 
     setTwins(mesh, h, vertIdx, nextVertIdx);
@@ -164,5 +174,23 @@ void MeshInitializer::setTwins(Mesh& mesh, int h, int vertIdx1, int vertIdx2) {
         HalfEdge* twinEdge = &mesh.halfEdges[edgeIndices.indexOf(edgeIdx)];
         mesh.halfEdges[h].twin = twinEdge;
         twinEdge->twin = &mesh.halfEdges[h];
+    }
+}
+/**
+ * @brief MeshInitializer::updateSharpnessOfTwinEdges Updates the sharpness value
+ * of the twin edges after a subdivision step.
+ * @param newMesh The new mesh.
+ */
+void MeshInitializer::updateSharpnessOfTwinEdges(Mesh &mesh) const {
+    QVector<HalfEdge>& edgeList = mesh.getHalfEdges();
+    for (int i = 0; i < edgeList.size(); i++) {
+        HalfEdge he = edgeList[i];
+        if (he.sharpness > 0 && !he.isBoundaryEdge()) {
+            if (he.twin->sharpness > 0) {
+                //  qDebug()<< "Twin already has sharpness" << he.sharpness << he.twin->sharpness;
+            } else {
+                he.twin->sharpness = he.sharpness;
+            }
+        }
     }
 }

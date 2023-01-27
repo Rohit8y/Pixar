@@ -496,7 +496,7 @@ void CatmullClarkSubdivider::topologyRefinement(Mesh &controlMesh,
 }
 
 /**
- * @brief LoopSubdivider::setHalfEdgeData Sets the data of a single half-edge
+ * @brief CatmullClarkSubdivider::setHalfEdgeData Sets the data of a single half-edge
  * (and the corresponding vertex and face)
  * @param newMesh The new mesh this half-edge will live in.
  * @param h Index of the half-edge.
@@ -524,7 +524,7 @@ void CatmullClarkSubdivider::setHalfEdgeData(Mesh &newMesh, int h, int edgeIdx,
 }
 
 /**
- * @brief LoopSubdivider::updateSharpnessOfTwinEdges Updates the sharpness value
+ * @brief CatmullClarkSubdivider::updateSharpnessOfTwinEdges Updates the sharpness value
  * of the twin edges after a subdivision step.
  * @param newMesh The new mesh.
  */

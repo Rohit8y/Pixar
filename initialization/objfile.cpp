@@ -33,7 +33,11 @@ OBJFile::OBJFile(const QString& fileName) {
                 handleVertexNormal(values);
             } else if (descriptor == "f") {
                 handleFace(values);
-            } else {
+            }
+            else if (descriptor == "she") {
+                handleSharpness(values);
+            }
+            else {
                 qDebug() << " * Line contents ignored," << currentLine;
             }
         }
@@ -115,6 +119,22 @@ void OBJFile::handleFace(const QStringList& values) {
     faceNormalIndices.append(faceNormalIndices);
     faceValences.append(values.size() - 1);
 }
+
+/**
+ * @brief OBJFile::handleSharpness Handles sharpness half-edge data. Invoked
+ * when the line starts with "she".
+ * @param values Line contents split by whitespace.
+ */
+void OBJFile::handleSharpness(const QStringList& values) {
+    if(values.size() == 3){
+        heSharpInd.append(values[1].toInt()); // Half-edge index
+        sharpnessValue.append(values[2].toDouble()); // Sharpness
+    }
+    else{
+        qDebug()<< "Incorrect sharpness format";
+    }
+}
+
 
 /**
  * @brief OBJFile::loadedSuccessfully Checks whether the model was loaded from

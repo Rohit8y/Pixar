@@ -152,6 +152,16 @@ background-color: rgb(245, 216, 125);</string>
        </item>
        <item>
         <property name="text">
+         <string>customOpenCube</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>customHand</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Hand</string>
         </property>
        </item>

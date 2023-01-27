@@ -12,6 +12,7 @@
         <file alias="Suzanne.obj">models/SuzanneQuad.obj</file>
         <file alias="Spot.obj">models/Spot.obj</file>
         <file alias="OpenCube.obj">models/OpenCube.obj</file>
+        <file alias="customOpenCube.obj">models/customOpenCube.obj</file>
         <file alias="HollowTetra.obj">models/HollowTetra.obj</file>
         <file alias="StackedCubesOpen.obj">models/StackedCubesOpen.obj</file>
         <file alias="StackedCubesClosed.obj">models/StackedCubesClosed.obj</file>
@@ -23,5 +24,6 @@
         <file alias="Brick.obj">models/Brick.obj</file>
         <file alias="Sphere.obj">models/Sphere.obj</file>
         <file alias="Hand.obj">models/Hand.obj</file>
+        <file alias="customHand.obj">models/customHand.obj</file>
     </qresource>
 </RCC>
