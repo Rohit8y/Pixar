@@ -184,7 +184,7 @@ QVector3D CatmullClarkSubdivider::vertexPoint(const Vertex &vertex) const {
 /**
  * @brief CatmullClarkSubdivider::vertexCorner Calculates the new position of the
  * provided vertex if it is a corner vertex. A vertex that is considered as corner
- * remains unchanged, i.e., does not move during subdivision.
+ * remains unchanged, i.e., position does not change during subdivision.
  *
  * @param vertex The vertex to calculate the new position of. Note that this
  * vertex is the vertex from the control mesh.
@@ -294,7 +294,7 @@ QVector3D CatmullClarkSubdivider::edgePoint(const HalfEdge &edge) const {
  *
  * M: the midpoint of the edge
  *
- * @param edge One of the half-edges that lives on the edge to calculate
+ * @param edge One of the half-edges that is placed on the edge to calculate
  * the edge point. Note that this half-edge is the half-edge from the control
  * mesh.
  * @return The coordinates of the new sharp edge point.
@@ -315,7 +315,7 @@ QVector3D CatmullClarkSubdivider::sharpEdgePoint(const HalfEdge &edge) const {
  * Vsmooth = the coordinates of the edge midpoint after applying the smooth edge rule
  * Vsharp = the coordinates of the edge midpoint after applying the sharp edge rule
  *
- * @param edge One of the half-edges that lives on the edge to calculate
+ * @param edge One of the half-edges that is placed on the edge to calculate
  * the edge point. Note that this half-edge is the half-edge from the control
  * mesh.
  * @return The coordinates of the new edge point.
