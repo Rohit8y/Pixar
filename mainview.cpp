@@ -199,33 +199,35 @@ void MainView::mouseMoveEvent(QMouseEvent* event) {
  */
 void MainView::mousePressEvent(QMouseEvent* event) {
     setFocus();
-    // Only works when vertex selection is checked
+    // Only works when Edge selection is checked fom UI
     if (event->buttons() == Qt::LeftButton) {
         if(settings.edgeSlectionEnabled){
             settings.isEdgeSelected=true;
+
+            // Ray casted from the point where the user clicks on the screen
             // Get screen space coordinates
             int mouse_x = event->position().x();
             int mouse_y = event->position().y();
-            GLfloat depth;
-            glReadPixels(mouse_x, height() - 1 - mouse_y,1, 1, GL_LEQUAL, GL_FLOAT, &depth);
-            // Get NDC
-            QVector3D ray_nds = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
+
+            // Get Normalized Device Coordinates (NDC)
+            QVector3D rayNDC = toNormalizedDeviceCoordinates(mouse_x,mouse_y);
 
             // Clipping
-            QVector4D ray_clip = QVector4D(ray_nds.x(),ray_nds.y(), -1.0 , 1.0);
+            QVector4D rayClip = QVector4D(rayNDC.x(),rayNDC.y(), -1.0 , 1.0);
 
             // Eye
-            QVector4D ray_eye = settings.projectionMatrix.inverted() * ray_clip;
-            //  float w =   1;
-            QVector4D ray_eye_view = QVector4D(ray_eye.x(),ray_eye.y(),-1.0,0.0);
+            // Invert the projection matrix and multiply with the clipped ray
+            QVector4D rayEye = settings.projectionMatrix.inverted() * rayClip;
+            QVector4D rayEyeView = QVector4D(rayEye.x(),rayEye.y(),-1.0,0.0);
 
             // World
-            QVector4D ray_eye_inverted = settings.modelViewMatrix.inverted() * ray_eye_view;
-            QVector3D ray_wor = QVector3D(ray_eye_inverted.x(),ray_eye_inverted.y(),ray_eye_inverted.z());
-            ray_wor = ray_wor.normalized();
+            // Invert the model view matrix and multiply with rayEyeView
+            QVector4D rayEyeInverted = settings.modelViewMatrix.inverted() * rayEyeView;
+            QVector3D directionRay = QVector3D(rayEyeInverted.x(),rayEyeInverted.y(),rayEyeInverted.z());
+            directionRay = directionRay.normalized();
 
-            // Find closest point in the current mesh
-            findClosestHalfEdge(ray_wor,0.5f);
+            // Find closest half edge in the current mesh
+            findClosestHalfEdge(directionRay);
 
             updateMatrices();
             updateBuffers(settings.meshes[settings.subDivValue]);
@@ -278,6 +280,7 @@ void MainView::onMessageLogged(QOpenGLDebugMessage Message) {
  * 3D normalised device coordinates.
  * @param mouse_x X coordinates of screen space.
  * @param mouse_y Y coordinates of screen space.
+ * @return A vector containing the normalized device coordinates.
  */
 QVector3D MainView::toNormalizedDeviceCoordinates(int mouse_x, int mouse_y) {
     QVector3D ray_nds;
@@ -290,18 +293,17 @@ QVector3D MainView::toNormalizedDeviceCoordinates(int mouse_x, int mouse_y) {
     return ray_nds;
 }
 
+/**
+ * @brief MainView::extractCameraPos Find the new czmera position when the screen is
+ * moved. The first step is to get the plane normals using the transpose of modelView
+ * matrix. Then plane distance is calculated of these normals which is used to get the
+ * final camera position after taking a cross product between these normals.
+ * @return A vector containing the new position of camera.
+ */
 QVector3D MainView::extractCameraPos() {
-    // Get the 3 basis vector planes at the camera origin and transform them into model space.
-    //
-    // NOTE: Planes have to be transformed by the inverse transpose of a matrix
-    //       Nice reference here: http://www.opengl.org/discussion_boards/showthread.php/159564-Clever-way-to-transform-plane-by-matrix
-    //
-    //       So for a transform to model space we need to do:
-    //            inverse(transpose(inverse(MV)))
-    //       This equals : transpose(MV) - see Lemma 5 in http://mathrefresher.blogspot.com.au/2007/06/transpose-of-matrix.html
-    //
-    // As each plane is simply (1,0,0,0), (0,1,0,0), (0,0,1,0) we can pull the data directly from the transpose matrix.
-    //
+
+    // Reference: http://www.opengl.org/discussion_boards/showthread.php/159564-Clever-way-to-transform-plane-by-matrix
+
     QMatrix4x4 modelViewT = settings.modelViewMatrix.transposed();
 
     // Get plane normals
@@ -315,7 +317,6 @@ QVector3D MainView::extractCameraPos() {
     float d3(modelViewT.column(2).w());
 
     // Get the intersection of these 3 planes
-    // http://paulbourke.net/geometry/3planes/
     QVector3D n2n3 = QVector3D::crossProduct(n2, n3);
     QVector3D n3n1 = QVector3D::crossProduct(n3, n1);
     QVector3D n1n2 = QVector3D::crossProduct(n1, n2);
@@ -326,31 +327,40 @@ QVector3D MainView::extractCameraPos() {
     return top / -denom;
 }
 
-void MainView::findClosestHalfEdge(const QVector3D& p, const float maxDist) {
+/**
+ * @brief MainView::findClosestHalfEdge Finds the vertex points of the closest
+ * half edge the provided ray is passing through by finding the half edge closest
+ * to the direction and the camera of the ray.
+ * @param direction The direction of the ray casted from the current camera position.
+ */
+void MainView::findClosestHalfEdge(const QVector3D& direction) {
 
     int heIndex= -1;
     float currentDist, minDist = 8;
-    float maxCP=100000;
+    float maxCP=100;
     float finalOriginDistance=10;
+
+    //Get current mesh
     Mesh& currentMesh = settings.meshes[settings.subDivValue];
     QVector<HalfEdge>& heList = currentMesh.getHalfEdges();
+
+    // The current positoin of the origin of the ray.
     QVector3D cameraPos = extractCameraPos();
 
-    for (int i=0;i<heList.size();i++) {
-        QVector3D v1 = heList[i].origin->coords;
-        QVector3D v2 = heList[i].next->origin->coords;
+    for (int i=0; i<heList.size(); i++) {
+        QVector3D vert1 = heList[i].origin->coords;
+        QVector3D vert2 = heList[i].next->origin->coords;
 
-        // Find distance from the ray
-        float dr1 = v1.distanceToLine(cameraPos,p);
-        float dr2 = v2.distanceToLine(cameraPos,p);
+        // Find sum of the distance of the ray from both the vertex vert1 and vert2
+        float sumRayDistance = vert1.distanceToLine(cameraPos,direction) + vert2.distanceToLine(cameraPos,direction);
 
-        float sumdr = dr1 + dr2;
+        // Find the sum of distance of the vertex vert1 and vert2 to the camera position
+        float sumCameraPosition = vert1.distanceToPoint(cameraPos) + vert2.distanceToPoint(cameraPos);
 
-        float sumcp = v1.distanceToPoint(cameraPos) + v2.distanceToPoint(cameraPos);
-
-        if (sumdr < minDist && sumcp <= maxCP) {
-            minDist = sumdr;
-            maxCP = sumcp;
+        // Find the ray closest to the direction and closest to the camera position
+        if (sumRayDistance < minDist && sumCameraPosition <= maxCP) {
+            minDist = sumRayDistance;
+            maxCP = sumCameraPosition;
             heIndex = i;
         }
     }

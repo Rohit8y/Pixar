@@ -41,7 +41,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_4_1_Core {
         QVector2D toNormalizedScreenCoordinates(float x, float y);
         QVector3D toNormalizedDeviceCoordinates(int mouse_x, int mouse_y);
         QVector3D extractCameraPos();
-        void findClosestHalfEdge(const QVector3D& p, const float maxDist);
+        void findClosestHalfEdge(const QVector3D& p);
 
         QOpenGLDebugLogger debugLogger;
 
