@@ -21,5 +21,7 @@
         <file alias="Fandisk.obj">models/Fandisk.obj</file>
         <file alias="FancyCup.obj">models/FancyCup.obj</file>
         <file alias="Brick.obj">models/Brick.obj</file>
+        <file alias="Sphere.obj">models/Sphere.obj</file>
+        <file alias="Hand.obj">models/Hand.obj</file>
     </qresource>
 </RCC>
